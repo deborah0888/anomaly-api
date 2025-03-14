@@ -8,7 +8,6 @@ const Hero = () => {
     <section className="hero">
       <h1 className="hero-title">Smart Anomaly Detection with AI-Powered Precision</h1>
       <p className="hero-subtitle">Enhancing Industrial Quality with Synthetic Data & AI-driven Insights.</p>
-      <button className="cta-button">Upload file</button>
       <p className="no-credit">Visualizing Anomalies, Optimizing Performance</p>
       
       <VideoShowcase />
