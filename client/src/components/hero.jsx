@@ -2,7 +2,6 @@
 import React from 'react';
 import './Hero.css';
 import VideoShowcase from './VideoShowcase';
-
 const Hero = () => {
   return (
     <section className="hero">
