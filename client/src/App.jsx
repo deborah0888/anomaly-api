@@ -76,6 +76,10 @@ import Hero from '../src/components/Hero';
 import Register from '../src/pages/Register';
 import Login from '../src/pages/Login';
 import Dashboard from '../src/pages/Dashboard';
+import  About from '../src/pages/About';
+import  Contact from '../src/pages/Contact';
+import  Feedback from '../src/pages/Feedback';
+import  Reviews from '../src/pages/Reviews';
 import { Toaster } from 'react-hot-toast';
 import { UserContextProvider } from '../context/userContext';
 import axios from 'axios';
@@ -95,6 +99,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/feedback" element={<Feedback />} />
+          <Route path="/reviews" element={<Reviews />} />
         </Routes>
       </div>
     </UserContextProvider>

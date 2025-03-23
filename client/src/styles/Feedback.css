@@ -1,0 +1,81 @@
+/* Feedback Page Styling */
+.feedback-container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .feedback-container h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .feedback-container p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .feedback-form label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    text-align: left;
+  }
+  
+  .feedback-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .feedback-form button {
+    padding: 10px;
+    font-size: 1rem;
+    color: white;
+    background-color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .feedback-form button:hover {
+    background-color: #333;
+  }
+  
+  /* Success message */
+  .success-message {
+    font-size: 1.1rem;
+    color: #008000;
+    font-weight: 600;
+    margin-top: 20px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .feedback-container {
+      max-width: 90%;
+      padding: 20px;
+    }
+  
+    .feedback-container h1 {
+      font-size: 1.8rem;
+    }
+  }
+  
