@@ -1,81 +1,90 @@
-/* Feedback Page Styling */
 .feedback-container {
-    max-width: 600px;
-    margin: 80px auto;
-    padding: 30px;
-    background: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-family: 'Arial', sans-serif;
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 30px;
+  background: #ffffff !important; /* Ensures white box */
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  position: relative;
+  z-index: 10; /* Ensures it is on top */
+}
+
+/* Heading */
+.feedback-container h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Description */
+.feedback-container p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Form Styling */
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+}
+
+.feedback-form label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Feedback Input */
+.feedback-form textarea {
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  border: 1px solid #555; /* Slightly lighter border */
+  border-radius: 5px;
+  font-size: 1rem;
+  resize: none;
+  background: #000 !important; /* Black background */
+  color: #fff !important; /* White text */
+  outline: none;
+}
+
+/* Placeholder Text (Optional) */
+.feedback-form textarea::placeholder {
+  color: #bbb; /* Light gray text */
+  opacity: 0.8;
+}
+
+
+/* Submit Button */
+.feedback-form button {
+  padding: 10px;
+  font-size: 1rem;
+  color: white;
+  background-color: #000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.feedback-form button:hover {
+  background-color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .feedback-container {
+    max-width: 90%;
+    padding: 20px;
   }
-  
+
   .feedback-container h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 10px;
+    font-size: 1.8rem;
   }
-  
-  .feedback-container p {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 20px;
-  }
-  
-  .feedback-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .feedback-form label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #333;
-    text-align: left;
-  }
-  
-  .feedback-form textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .feedback-form button {
-    padding: 10px;
-    font-size: 1rem;
-    color: white;
-    background-color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  
-  .feedback-form button:hover {
-    background-color: #333;
-  }
-  
-  /* Success message */
-  .success-message {
-    font-size: 1.1rem;
-    color: #008000;
-    font-weight: 600;
-    margin-top: 20px;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .feedback-container {
-      max-width: 90%;
-      padding: 20px;
-    }
-  
-    .feedback-container h1 {
-      font-size: 1.8rem;
-    }
-  }
-  
+}
