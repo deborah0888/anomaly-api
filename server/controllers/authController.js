@@ -1229,15 +1229,15 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const { comparePassword, hashPassword } = require("../utils/auth");
-const cloudinary = require("cloudinary").v2;
+//const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 
-// Cloudinary Config
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+// // Cloudinary Config
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+// });
 
 // Test Route
 const test = (req, res) => {
@@ -1245,6 +1245,28 @@ const test = (req, res) => {
 };
 
 // User Registration
+// const registerUser = async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+//     if (!name || !email || !password) {
+//       return res.status(400).json({ error: "All fields are required" });
+//     }
+
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.status(400).json({ error: "Email already in use" });
+//     }
+
+//     const hashedPassword = await hashPassword(password);
+//     const newUser = new User({ name, email, password: hashedPassword, imageUrl: "" });
+
+//     await newUser.save();
+//     res.status(201).json({ success: true, message: "User registered successfully" });
+//   } catch (error) {
+//     console.error("❌ Registration Error:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -1259,9 +1281,23 @@ const registerUser = async (req, res) => {
 
     const hashedPassword = await hashPassword(password);
     const newUser = new User({ name, email, password: hashedPassword, imageUrl: "" });
-
     await newUser.save();
-    res.status(201).json({ success: true, message: "User registered successfully" });
+
+    // ✅ Generate JWT after registration
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.cookie("token", token, { httpOnly: true, sameSite: "strict" }).status(201).json({
+      success: true,
+      user: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        imageUrl: newUser.imageUrl,
+      },
+      token,
+    });
   } catch (error) {
     console.error("❌ Registration Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1309,23 +1345,46 @@ const getProfile = async (req, res) => {
   });
 };
 
-// Image Upload to Cloudinary
+// Image Upload 
+// const uploadImage = async (req, res) => {
+//   try {
+//     const { userId } = req.body;
+//     if (!userId) return res.status(400).json({ error: "User ID is required" });
+
+//     const file = req.file;
+//     if (!file) return res.status(400).json({ error: "No file uploaded" });
+
+//     const imagePath = `/uploads/${file.filename}`; // Relative path for frontend
+
+//     const user = await User.findByIdAndUpdate(
+//       userId,
+//       { imageUrl: imagePath },
+//       { new: true }
+//     );
+
+//     res.json({ success: true, imageUrl: imagePath, user });
+//   } catch (error) {
+//     console.error("❌ Upload Error:", error);
+//     res.status(500).json({ error: "Image upload failed" });
+//   }
+// };
+// controllers/authController.js
+
 const uploadImage = async (req, res) => {
   try {
     const { userId } = req.body;
     if (!userId) return res.status(400).json({ error: "User ID is required" });
+    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
-    const file = req.file;
-    if (!file) return res.status(400).json({ error: "No file uploaded" });
+    // Save image path to MongoDB
+    const imagePath = `/uploads/${req.file.filename}`;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { imageUrl: imagePath },
+      { new: true }
+    ).select("-password");
 
-    const uploadStream = cloudinary.uploader.upload_stream({ folder: "uploads" }, async (error, result) => {
-      if (error) return res.status(500).json({ error: "Image upload failed" });
-
-      const user = await User.findByIdAndUpdate(userId, { imageUrl: result.secure_url }, { new: true });
-      res.json({ success: true, imageUrl: result.secure_url, user });
-    });
-
-    streamifier.createReadStream(file.buffer).pipe(uploadStream);
+    res.json({ success: true, imageUrl: imagePath, user });
   } catch (error) {
     console.error("❌ Upload Error:", error);
     res.status(500).json({ error: "Image upload failed" });

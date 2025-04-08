@@ -174,12 +174,18 @@ export default function Register() {
         return;
       }
 
-      const response = await axios.post('/register', { name, email, password });
-
+      //const response = await axios.post('/register', { name, email, password });
+      const response = await axios.post('http://localhost:8000/register', {
+        name,
+        email,
+        password,
+      });
+      
       if (response.data.error) {
         toast.error(response.data.error);
       } else {
         toast.success('Registration successful! Redirecting...');
+        localStorage.setItem('token', response.data.token); 
         setData({ name: '', email: '', password: '' }); // Reset form
         navigate('/login');
       }

@@ -123,7 +123,7 @@ export default function Login() {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/login", { email, password }, { withCredentials: true });
+      const response = await axios.post("http://localhost:8000/api/auth/login", { email, password }, { withCredentials: true });
 
       if (response.data.error) {
         toast.error(response.data.error);

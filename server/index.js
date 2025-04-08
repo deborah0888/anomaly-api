@@ -214,7 +214,7 @@ app.use(
 );
 
 // Routes
-app.use("/", authRoutes);
+app.use("/api/auth", authRoutes);
 const Feedback = require('./models/feedback'); // Import Feedback model
 
 // Submit Feedback
