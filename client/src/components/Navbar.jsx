@@ -125,6 +125,8 @@ const Navbar = () => {
         <Link to="/feedback" className="nav-item">Feedback</Link>
         <Link to="/contact" className="nav-item">Contact</Link>
         <Link to="/reviews" className="nav-item ">Reviews</Link>
+        <Link to="/blog" className="nav-item ">Blog</Link>
+        <Link to="/faqs" className="nav-item ">FAQ</Link>
        
       </div>
       

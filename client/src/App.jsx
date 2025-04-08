@@ -80,6 +80,8 @@ import  About from '../src/pages/About';
 import  Contact from '../src/pages/Contact';
 import  Feedback from '../src/pages/Feedback';
 import  Reviews from '../src/pages/Reviews';
+import  Blog from '../src/pages/Blog';
+import  Faqs from '../src/pages/Faqs';
 import { Toaster } from 'react-hot-toast';
 import { UserContextProvider } from '../context/userContext';
 import axios from 'axios';
@@ -103,6 +105,8 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/reviews" element={<Reviews />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/faqs" element={<Faqs />} />
         </Routes>
       </div>
     </UserContextProvider>
