@@ -1,7 +1,7 @@
-/* About Page Styling */
+/* 
 .about {
   max-width: 800px;
-  margin: 80px auto; /* Centers the content and adds spacing from the navbar */
+  margin: 80px auto; 
   padding: 30px;
   background: #ffffff;
   border-radius: 10px;
@@ -24,7 +24,6 @@
   text-align: justify;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .about {
     max-width: 90%;
@@ -38,4 +37,30 @@
   .about p {
     font-size: 1rem;
   }
+} */
+.about {
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 3rem 2rem;
+  background: linear-gradient(to right, #ffffff, #f0f4ff);
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
+  text-align: justify;
+  line-height: 1.8;
+}
+
+.about p {
+  font-size: 1.15rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.3px;
+}
+
+.about p:first-of-type {
+  font-weight: 600;
+  color: #2a2a2a;
+  font-size: 1.3rem;
+  text-align: center;
+  margin-bottom: 2rem;
 }
