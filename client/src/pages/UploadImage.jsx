@@ -36,12 +36,6 @@ const UploadImage = () => {
         <input type="file" onChange={handleImageChange} required />
         <button type="submit">Upload</button>
       </form>
-      {imageUrl && (
-        <div className="image-preview">
-          <h2>Uploaded Image:</h2>
-          <img src={imageUrl} alt="Uploaded" />
-        </div>
-      )}
     </div>
   );
 };
