@@ -6,6 +6,7 @@ import '../styles/UploadImage.css'; // Create this file for styling
 const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
+  const [anomalyScore, setAnomalyScore] = useState(null);
   const navigate = useNavigate();
 
   const handleImageChange = (e) => {
@@ -21,12 +22,22 @@ const UploadImage = () => {
       const response = await axios.post('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setImageUrl(response.data.imageUrl);
+      setImageUrl(response.data.imageUrl);// Save the uploaded image URL
+
+      
+      // Now send the image to the /predict route for processing
+      const predictResponse = await axios.post('/predict', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      setAnomalyScore(predictResponse.data.anomaly_score);  // Store the anomaly score
+      alert('Image uploaded and processed successfully!');
       alert('Image uploaded successfully!');
     } catch (error) {
       console.error(error);
       alert('Image upload failed. Please try again.');
     }
+    
   };
 
   return (
@@ -36,6 +47,12 @@ const UploadImage = () => {
         <input type="file" onChange={handleImageChange} required />
         <button type="submit">Upload</button>
       </form>
+            {/* Display the anomaly score */}
+            {anomalyScore !== null && (
+        <div>
+          <h3>Anomaly Score: {anomalyScore}</h3>
+        </div>
+      )}
     </div>
   );
 };

@@ -70,16 +70,22 @@ const multer = require("multer");
 const path = require("path");
 
 // Set storage destination and filename
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/"); // This is your local folder
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads/"); // This is your local folder
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueName = Date.now() + "-" + file.originalname;
+//     cb(null, uniqueName);
+//   },
+// });
 
-const upload = multer({ storage });
+// const multer = require('multer');
+
+// Memory storage configuration to store files in buffer
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+// app.post('/api/auth/upload', upload.single('image'), uploadImage);
 
 module.exports = upload;
