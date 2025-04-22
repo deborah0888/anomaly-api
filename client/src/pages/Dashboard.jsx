@@ -83,7 +83,10 @@ const Dashboard = () => {
 
     try {
       // Send the image to Flask API for anomaly detection
-      const { data } = await axios.post("http://localhost:5001/predict", formData, {
+      // const { data } = await axios.post("http://localhost:5001/predict", formData, {
+      // ✅ CORRECT — send to your Node server so it can call Flask + save to DB
+      const { data } = await axios.post("http://localhost:8000/api/auth/upload", formData, {
+
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
@@ -98,7 +101,7 @@ const Dashboard = () => {
       });
 
       // If you need to update the user image URL, you can do that here as well
-      // setUser({ ...user, imageUrl: data.imageUrl });
+      setUser({ ...user, imageUrl: data.imageUrl });
 
       alert("Upload successful!");
     } catch (error) {
@@ -134,11 +137,12 @@ const Dashboard = () => {
         {anomalyResult !== null && (
           <div className="mt-4">
             <h3 className="text-xl font-semibold">
-              {anomalyResult.isAnomalous ? "Anomaly Detected!" : "Normal Image"}
+              <br></br>
+              {anomalyResult.isAnomalous ? "🔴 Anomaly Detected!Out of the ordinary" : "✅Looks normal — just as expected."}
             </h3>
-            <p className="text-sm text-gray-500">
+            {/*<p className="text-sm text-gray-500">
               Error: {anomalyResult.error}
-            </p>
+            </p>*/}
           </div>
         )}
       </div>

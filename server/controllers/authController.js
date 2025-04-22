@@ -1,9 +1,13 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("../models/User");
+const User = require("../models/user");
 const { comparePassword, hashPassword } = require("../utils/auth");
 //const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
+const fs = require("fs");
+const path = require("path");
+const FormData = require("form-data");
+const axios = require("axios");
 
 // Test Route
 const test = (req, res) => {
@@ -126,23 +130,19 @@ const getProfile = async (req, res) => {
 //     res.status(500).json({ error: "Image upload failed" });
 //   }
 // };
+// const fs = require("fs");
+
 const uploadImage = async (req, res) => {
   try {
     const { userId } = req.body;
-    if (!userId) return res.status(400).json({ error: "User ID is required" });
     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
-    // Prepare FormData to send buffer to Flask
-    const FormData = require("form-data");
-    const axios = require("axios");
+    const imagePath = req.file.path;
+    const imageStream = fs.createReadStream(imagePath);
 
     const formData = new FormData();
-    formData.append("image", req.file.buffer, {
-      filename: req.file.originalname,
-      contentType: req.file.mimetype,
-    });
+    formData.append("image", imageStream); // 👈 fixed here
 
-    // 🔁 Send to Flask server
     const flaskRes = await axios.post(
       "http://localhost:5001/predict",
       formData,
@@ -150,26 +150,27 @@ const uploadImage = async (req, res) => {
         headers: formData.getHeaders(),
       }
     );
-    // Extract anomaly score from response
+
     const anomalyScore = flaskRes.data.anomaly_score;
 
-    // Save image path and score to MongoDB
-    const imagePath = `/uploads/${req.file.originalname}`;
     const user = await User.findByIdAndUpdate(
       userId,
-      { imageUrl: imagePath, anomalyScore }, // save both image and score
+      {
+        imageUrl: `/uploads/${req.file.filename}`,
+        anomalyScore,
+      },
       { new: true }
     ).select("-password");
 
-    res.json({
-      success: true,
-      imageUrl: imagePath,
+    res.status(200).json({
+      is_anomalous: flaskRes.data.is_anomalous,
       anomalyScore,
-      user,
+      imageUrl: `/uploads/${req.file.filename}`,
+      mongo_save: true,
     });
-  } catch (error) {
-    console.error("❌ Upload Error:", error);
-    res.status(500).json({ error: "Image upload + prediction failed" });
+  } catch (err) {
+    console.error("❌ Upload Error:", err.message);
+    res.status(500).json({ error: "Image upload failed" });
   }
 };
 
