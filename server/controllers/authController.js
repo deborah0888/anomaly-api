@@ -110,28 +110,6 @@ const getProfile = async (req, res) => {
   });
 };
 
-// const uploadImage = async (req, res) => {
-//   try {
-//     const { userId } = req.body;
-//     if (!userId) return res.status(400).json({ error: "User ID is required" });
-//     if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
-//     // Save image path to MongoDB
-//     const imagePath = `/uploads/${req.file.filename}`;
-//     const user = await User.findByIdAndUpdate(
-//       userId,
-//       { imageUrl: imagePath },
-//       { new: true }
-//     ).select("-password");
-
-//     res.json({ success: true, imageUrl: imagePath, user });
-//   } catch (error) {
-//     console.error("❌ Upload Error:", error);
-//     res.status(500).json({ error: "Image upload failed" });
-//   }
-// };
-// const fs = require("fs");
-
 const uploadImage = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -141,7 +119,7 @@ const uploadImage = async (req, res) => {
     const imageStream = fs.createReadStream(imagePath);
 
     const formData = new FormData();
-    formData.append("image", imageStream); // 👈 fixed here
+    formData.append("image", imageStream);
 
     const flaskRes = await axios.post(
       "http://localhost:5001/predict",
@@ -151,20 +129,20 @@ const uploadImage = async (req, res) => {
       }
     );
 
-    const anomalyScore = flaskRes.data.anomaly_score;
+    const { is_anomalous, error } = flaskRes.data; // ✅ match your frontend key names
 
     const user = await User.findByIdAndUpdate(
       userId,
       {
         imageUrl: `/uploads/${req.file.filename}`,
-        anomalyScore,
+        anomalyScore: error, // Still save this internally if needed
       },
       { new: true }
     ).select("-password");
 
     res.status(200).json({
-      is_anomalous: flaskRes.data.is_anomalous,
-      anomalyScore,
+      is_anomalous,
+      error, // ✅ send this back — frontend expects this name!
       imageUrl: `/uploads/${req.file.filename}`,
       mongo_save: true,
     });
@@ -174,4 +152,4 @@ const uploadImage = async (req, res) => {
   }
 };
 
-module.exports = { test, registerUser, loginUser, getProfile, uploadImage };
+ module.exports = { test, registerUser, loginUser, getProfile, uploadImage };

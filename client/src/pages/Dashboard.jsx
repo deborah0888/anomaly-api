@@ -1,77 +1,31 @@
-// import { useContext, useState } from "react";
-// import { UserContext } from "../../context/userContext";
-// import axios from "axios";
-
-// const Dashboard = () => {
-//   const { user, setUser } = useContext(UserContext);
-//   const [file, setFile] = useState(null);
-//   const [uploading, setUploading] = useState(false);
-
-//   const handleFileChange = (e) => setFile(e.target.files[0]);
-
-//   const handleUpload = async () => {
-//     if (!file || !user?.id) return alert("Please select a file and login first!");
-
-//     setUploading(true);
-//     const formData = new FormData();
-//     formData.append("image", file);
-//     formData.append("userId", user.id);
-
-//     try {
-//       const { data } = await axios.post("http://localhost:8000/api/auth/upload", formData, {
-//         headers: { "Content-Type": "multipart/form-data" },
-//       });
-      
-//       setUser({ ...user, imageUrl: data.imageUrl });
-//       console.log("Anomaly Score:", data.anomalyScore);
-//       alert("Upload successful!");
-//     } catch (error) {
-//       console.error("Upload failed:", error);
-//       alert("Upload failed!");
-//     } finally {
-//       setUploading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-//       <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md text-center">
-//         <h2 className="text-2xl font-semibold mb-4">Upload Your Image</h2>
-  
-//         <input
-//           type="file"
-//           onChange={handleFileChange}
-//           className="mb-4 w-full px-3 py-2 border rounded-lg text-sm"
-//         />
-  
-//         <button
-//           onClick={handleUpload}
-//           disabled={uploading}
-//           className={`w-full py-2 rounded-lg text-white ${
-//             uploading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-//           }`}
-//         >
-//           {uploading ? "Uploading..." : "Upload"}
-//         </button>
-  
-//       </div>
-//     </div>
-//   );
-  
-// };
-
-// export default Dashboard;
-import { useContext, useState } from "react";
+import { useContext, useState, useRef } from "react";
 import { UserContext } from "../../context/userContext";
+import '../styles/Dashboard.css';
 import axios from "axios";
 
 const Dashboard = () => {
   const { user, setUser } = useContext(UserContext);
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [anomalyResult, setAnomalyResult] = useState(null);  // State to store anomaly detection result
+  const [anomalyResult, setAnomalyResult] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const handleFileChange = (e) => setFile(e.target.files[0]);
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile) {
+      // Revoke previous URL if exists
+      if (previewUrl && previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    } else {
+      setPreviewUrl(null);
+    }
+    // Clear any previous results when selecting new file
+    setAnomalyResult(null);
+  };
 
   const handleUpload = async () => {
     if (!file || !user?.id) return alert("Please select a file and login first!");
@@ -82,67 +36,157 @@ const Dashboard = () => {
     formData.append("userId", user.id);
 
     try {
-      // Send the image to Flask API for anomaly detection
-      // const { data } = await axios.post("http://localhost:5001/predict", formData, {
-      // ✅ CORRECT — send to your Node server so it can call Flask + save to DB
       const { data } = await axios.post("http://localhost:8000/api/auth/upload", formData, {
-
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
 
-      // Log anomaly score and update user image URL if needed
-      console.log("Anomaly Score:", data.error);
-      
-      // Set the result of anomaly detection
+      console.log("📡 Server Response:", data);
       setAnomalyResult({
         isAnomalous: data.is_anomalous,
-        error: data.error,
+        anomalyScore: data.error,
       });
 
-      // If you need to update the user image URL, you can do that here as well
-      setUser({ ...user, imageUrl: data.imageUrl });
+      // if (data.imageUrl) {
+      //   // Revoke the previous object URL
+      //   if (previewUrl && previewUrl.startsWith('blob:')) {
+      //     URL.revokeObjectURL(previewUrl);
+      //   }
+      //   // Set new preview URL from server
+      //   const serverImageUrl = `http://localhost:8000${data.imageUrl}`;
+      //   setPreviewUrl(serverImageUrl);
 
-      alert("Upload successful!");
+      //   setUser((prevUser) => ({
+      //     ...prevUser,
+      //     imageUrl: data.imageUrl,
+      //   }));
+      // }
+      if (data.imageUrl) {
+        // Revoke the previous object URL
+        if (previewUrl && previewUrl.startsWith('blob:')) {
+          URL.revokeObjectURL(previewUrl);
+        }
+      
+        // Construct and log full image URL
+        const serverImageUrl = `http://localhost:8000${data.imageUrl}?t=${new Date().getTime()}`;
+        console.log("🔗 Generated Image URL:", serverImageUrl);
+      
+        // Set as preview
+        setPreviewUrl(serverImageUrl);
+      
+        // Update user context (if needed)
+        setUser((prevUser) => ({
+          ...prevUser,
+          imageUrl: data.imageUrl,
+        }));
+      }
+      
+      alert("✅ Upload successful!");
     } catch (error) {
-      console.error("Upload failed:", error);
+      console.error("❌ Upload failed:", error);
       alert("Upload failed!");
     } finally {
       setUploading(false);
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6">
-      <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md text-center">
-        <h2 className="text-2xl font-semibold mb-4">Upload Your Image</h2>
-  
-        <input
-          type="file"
-          onChange={handleFileChange}
-          className="mb-4 w-full px-3 py-2 border rounded-lg text-sm"
-        />
-  
-        <button
-          onClick={handleUpload}
-          disabled={uploading}
-          className={`w-full py-2 rounded-lg text-white ${
-            uploading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
-          }`}
-        >
-          {uploading ? "Uploading..." : "Upload"}
-        </button>
+  const triggerFileInput = () => {
+    fileInputRef.current.click();
+  };
 
-        {/* Display the anomaly detection result */}
+  const handleClear = () => {
+    setFile(null);
+    setPreviewUrl(null);
+    setAnomalyResult(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    // Revoke object URL if exists
+    if (previewUrl && previewUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(previewUrl);
+    }
+  };
+
+  return (
+    <div className="dashboard-container">
+      <div className="upload-card">
+        <div className="upload-area" onClick={triggerFileInput}>
+          {previewUrl ? (
+            <img 
+              src={previewUrl}
+              alt="Preview" 
+              className="preview-image"
+            />
+          ) : (
+            <div className="upload-prompt">
+              <svg className="upload-icon" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M14,13V17H10V13H7L12,8L17,13H14M19.35,10.03C18.67,6.59 15.64,4 12,4C9.11,4 6.6,5.64 5.35,8.03C2.34,8.36 0,10.9 0,14A6,6 0 0,0 6,20H19A5,5 0 0,0 24,15C24,12.36 21.95,10.22 19.35,10.03Z" />
+              </svg>
+              <p>Click to select an image</p>
+              <p className="file-types">Supports: JPG, PNG, JPEG</p>
+            </div>
+          )}
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            className="file-input"
+          />
+        </div>
+
+        <div className="actions">
+          {previewUrl && (
+            <button
+              onClick={handleUpload}
+              disabled={uploading}
+              className={`upload-button ${uploading ? 'uploading' : ''}`}
+            >
+              {uploading ? (
+                <>
+                  <svg className="spinner" viewBox="0 0 50 50">
+                    <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
+                  </svg>
+                  Processing...
+                </>
+              ) : (
+                'Analyze Image'
+              )}
+            </button>
+          )}
+
+          {previewUrl && (
+            <button 
+              onClick={handleClear}
+              className="clear-button"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         {anomalyResult !== null && (
-          <div className="mt-4">
-            <h3 className="text-xl font-semibold">
-              <br></br>
-              {anomalyResult.isAnomalous ? "🔴 Anomaly Detected!Out of the ordinary" : "✅Looks normal — just as expected."}
-            </h3>
-            {/*<p className="text-sm text-gray-500">
-              Error: {anomalyResult.error}
-            </p>*/}
+          <div className={`result-container ${anomalyResult.isAnomalous ? 'anomaly' : 'normal'}`}>
+            <div className="result-header">
+              {anomalyResult.isAnomalous ? (
+                <>
+                  <svg className="result-icon" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12,2L1,21H23M12,6L19.53,19H4.47M11,10V14H13V10M11,16V18H13V16" />
+                  </svg>
+                  <span>Anomaly Detected!</span>
+                </>
+              ) : (
+                <>
+                  <svg className="result-icon" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" />
+                  </svg>
+                  <span>No Anomalies Found</span>
+                </>
+              )}
+            </div>
+            <div className="result-score">
+              Confidence: <span>{anomalyResult.anomalyScore}</span>
+            </div>
           </div>
         )}
       </div>

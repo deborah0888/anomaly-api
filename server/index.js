@@ -29,6 +29,10 @@ app.use(
     origin: "http://localhost:5173",
   })
 );
+const path = require("path");
+
+// Serve static files from the 'uploads' folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
