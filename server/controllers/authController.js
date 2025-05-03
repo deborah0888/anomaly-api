@@ -110,10 +110,15 @@ const getProfile = async (req, res) => {
   });
 };
 
+
 const uploadImage = async (req, res) => {
   try {
     const { userId } = req.body;
-    if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+    if (!req.file) {
+      console.log("❌ No file uploaded");
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
     const imagePath = req.file.path;
     const imageStream = fs.createReadStream(imagePath);
@@ -121,6 +126,7 @@ const uploadImage = async (req, res) => {
     const formData = new FormData();
     formData.append("image", imageStream);
 
+    // Send image to Flask server for prediction
     const flaskRes = await axios.post(
       "http://localhost:5001/predict",
       formData,
@@ -129,22 +135,34 @@ const uploadImage = async (req, res) => {
       }
     );
 
-    const { is_anomalous, error } = flaskRes.data; // ✅ match your frontend key names
+    const { is_anomalous, error } = flaskRes.data;
 
+    const newImageEntry = {
+      imageUrl: `/uploads/${req.file.filename}`,
+      anomalyScore: error,
+      isAnomalous: is_anomalous,
+      uploadedAt: new Date(),
+    };
+
+    // Update the user's image array in MongoDB
     const user = await User.findByIdAndUpdate(
       userId,
-      {
-        imageUrl: `/uploads/${req.file.filename}`,
-        anomalyScore: error, // Still save this internally if needed
-      },
+      { $push: { images: newImageEntry } },
       { new: true }
     ).select("-password");
 
+    // ✅ Debug logs
+    console.log("🧠 Flask Response:", flaskRes.data);
+    console.log("🖼️ New Image Entry:", newImageEntry);
+    console.log("📥 Updating User ID:", userId);
+    console.log("📦 Updated User Images:", user.images);
+
     res.status(200).json({
       is_anomalous,
-      error, // ✅ send this back — frontend expects this name!
-      imageUrl: `/uploads/${req.file.filename}`,
+      error,
+      imageUrl: newImageEntry.imageUrl,
       mongo_save: true,
+      user, // Include updated user object
     });
   } catch (err) {
     console.error("❌ Upload Error:", err.message);
@@ -152,4 +170,10 @@ const uploadImage = async (req, res) => {
   }
 };
 
- module.exports = { test, registerUser, loginUser, getProfile, uploadImage };
+module.exports = {
+  uploadImage,
+  test,
+  registerUser,
+  loginUser,
+  getProfile,
+};

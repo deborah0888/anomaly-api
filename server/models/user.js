@@ -8,8 +8,14 @@ const userSchema = new Schema({
     unique: true,
   },
   password: String,
-  imageUrl: String, 
-  anomalyScore: Number,
+  images: [
+    {
+      imageUrl: String,
+      anomalyScore: Number,
+      isAnomalous: Boolean,
+      uploadedAt: { type: Date, default: Date.now },
+    }
+  ],
 });
 
 const UserModel = mongoose.model('User', userSchema);

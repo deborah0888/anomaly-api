@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import '../styles/UploadImage.css'; // Create this file for styling
+import '../styles/UploadImage.css';
 
 const UploadImage = () => {
   const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState('');
-  const [anomalyScore, setAnomalyScore] = useState(null);
-  const navigate = useNavigate();
+  const [imageUrls, setImageUrls] = useState([]);
+  const [userId, setUserId] = useState(""); // Replace with actual user ID logic
+
+  useEffect(() => {
+    // Fetch profile to get userId and image history
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get("http://localhost:8000/api/auth/profile", { withCredentials: true });
+        setUserId(res.data._id);
+        //setImageUrls(res.data.imageUrls || []);
+        setImageUrls(res.data.user.images.map(img => img.imageUrl));
+
+      } catch (err) {
+        console.error("❌ Error fetching profile:", err);
+      }
+    };
+    fetchUserData();
+  }, []);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -15,29 +29,23 @@ const UploadImage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!image || !userId) return alert("Please select image and ensure user is logged in.");
+
     const formData = new FormData();
-    formData.append('image', image);
+    formData.append("image", image);
+    formData.append("userId", userId);
 
     try {
-      const response = await axios.post('/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const res = await axios.post("http://localhost:8000/api/auth/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
       });
-      setImageUrl(response.data.imageUrl);// Save the uploaded image URL
-
-      
-      // Now send the image to the /predict route for processing
-      const predictResponse = await axios.post('/predict', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      setAnomalyScore(predictResponse.data.anomaly_score);  // Store the anomaly score
-      alert('Image uploaded and processed successfully!');
-      alert('Image uploaded successfully!');
-    } catch (error) {
-      console.error(error);
-      alert('Image upload failed. Please try again.');
+      alert("Image uploaded!");
+      setImageUrls(res.data.user.imageUrls);
+    } catch (err) {
+      console.error(err);
+      alert("Upload failed.");
     }
-    
   };
 
   return (
@@ -47,12 +55,13 @@ const UploadImage = () => {
         <input type="file" onChange={handleImageChange} required />
         <button type="submit">Upload</button>
       </form>
-            {/* Display the anomaly score */}
-            {anomalyScore !== null && (
-        <div>
-          <h3>Anomaly Score: {anomalyScore}</h3>
-        </div>
-      )}
+
+      <h2>Your Image History</h2>
+      <div className="image-gallery">
+        {imageUrls.map((url, index) => (
+          <img key={index} src={`http://localhost:8000${url}`} alt={`upload-${index}`} className="uploaded-image" />
+        ))}
+      </div>
     </div>
   );
 };
