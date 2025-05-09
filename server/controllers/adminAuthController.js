@@ -184,8 +184,37 @@ const getAdminProfile = async (req, res) => {
     res.json(admin);
   });
 };
+const User = require("../models/user");
+
+// Get all users (basic info)
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({}, "name email"); // exclude password
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
+};
+
+// Get image history of a single user
+const getUserHistory = async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findById(userId, "name email images");
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json({ name: user.name, email: user.email, images: user.images });
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching user history" });
+  }
+};
+
+//module.exports = { getAllUsers, getUserHistory };
 
 module.exports = {
+  getAllUsers,
+  getUserHistory,
   registerAdmin,
   loginAdmin,
   getAdminProfile,

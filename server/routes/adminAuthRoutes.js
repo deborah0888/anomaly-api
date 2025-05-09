@@ -11,7 +11,11 @@
 // module.exports = router;
 const express = require("express");
 const router = express.Router();
-const { registerAdmin, loginAdmin, getAdminProfile } = require("../controllers/adminAuthController");
+const { registerAdmin, loginAdmin, getAdminProfile, getAllUsers, getUserHistory  } = require("../controllers/adminAuthController");
+//const { getAllUsers, getUserHistory } = require("../controllers/adminController");
+
+router.get("/users", getAllUsers);
+router.get("/user/:id/history", getUserHistory);
 
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
