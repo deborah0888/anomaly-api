@@ -76,6 +76,9 @@ import Hero from '../src/components/Hero';
 import Register from '../src/pages/Register';
 import Login from '../src/pages/Login';
 import Dashboard from '../src/pages/Dashboard';
+import AdminRegister from '../src/pages/AdminRegister';
+import AdminLogin from '../src/pages/AdminLogin';
+import AdminDashboard from '../src/pages/AdminDashboard';
 import  About from '../src/pages/About';
 import  Contact from '../src/pages/Contact';
 import  Feedback from '../src/pages/Feedback';
@@ -90,27 +93,35 @@ import '../src/styles/App.css';
 axios.defaults.baseURL = 'http://localhost:8000';
 axios.defaults.withCredentials = true;
 
+import { AdminContextProvider } from '../context/adminContext';
+
 function App() {
   return (
     <UserContextProvider>
-      <div className="App">
-        <Navbar />
-        <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />
-        <Routes>
-          <Route path="/" element={<Hero />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/feedback" element={<Feedback />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/faqs" element={<Faqs />} />
-        </Routes>
-      </div>
+      <AdminContextProvider>
+        <div className="App">
+          <Navbar />
+          <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />
+          <Routes>
+            <Route path="/" element={<Hero />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/adminregister" element={<AdminRegister />} />
+            <Route path="/adminlogin" element={<AdminLogin />} />
+            <Route path="/admindashboard" element={<AdminDashboard />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/faqs" element={<Faqs />} />
+          </Routes>
+        </div>
+      </AdminContextProvider>
     </UserContextProvider>
   );
 }
+
 
 export default App;

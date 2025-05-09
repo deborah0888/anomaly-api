@@ -130,10 +130,10 @@ const Navbar = () => {
        
       </div>
       
-      <div className="auth-buttons">
+      {/* <div className="auth-buttons">
         <Link to="/login" className="login-btn">Login</Link>
         <Link to="/register" className="signup-btn">Sign up</Link>
-      </div>
+      </div> */}
     </nav>
   );
 };
