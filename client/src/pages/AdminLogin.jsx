@@ -1,9 +1,76 @@
+// // import { useState, useContext } from "react";
+// // import axios from "axios";
+// // import { toast } from "react-hot-toast";
+// // import { useNavigate } from "react-router-dom";
+// // //import { AdminContext } from "../../context/adminContext";
+// // console.log("adminContext import starting");
+// // import { AdminContext } from "../../context/adminContext";
+
+// // export default function AdminLogin() {
+// //   const { setAdmin } = useContext(AdminContext);
+// //   const navigate = useNavigate();
+// //   const [data, setData] = useState({ email: "", password: "" });
+
+// //   const loginAdmin = async (e) => {
+// //     e.preventDefault();
+
+// //     const { email, password } = data;
+// //     if (!email || !password) {
+// //       toast.error("Email and password are required!");
+// //       return;
+// //     }
+
+// //     try {
+// //       const response = await axios.post(
+// //         "http://localhost:8000/api/admin/login",
+// //         { email, password },
+// //         { withCredentials: true }
+// //       );
+
+// //       if (response.data.error) {
+// //         toast.error(response.data.error);
+// //       } else {
+// //         toast.success("Admin login successful!");
+// //         setAdmin(response.data.admin);
+// //         setData({ email: "", password: "" });
+// //         navigate("/admindashboard");
+// //       }
+// //     } catch (error) {
+// //       console.error("Admin Login Error:", error);
+// //       toast.error("Something went wrong. Please try again!");
+// //     }
+// //   };
+
+// //   return (
+// //     <div>
+// //       <form onSubmit={loginAdmin}>
+// //         <label>Email</label>
+// //         <input
+// //           type="email"
+// //           placeholder="Enter email..."
+// //           value={data.email}
+// //           onChange={(e) => setData({ ...data, email: e.target.value })}
+// //           required
+// //         />
+
+// //         <label>Password</label>
+// //         <input
+// //           type="password"
+// //           placeholder="Enter password..."
+// //           value={data.password}
+// //           onChange={(e) => setData({ ...data, password: e.target.value })}
+// //           required
+// //         />
+
+// //         <button type="submit">Login</button>
+// //       </form>
+// //     </div>
+// //   );
+// // }
 // import { useState, useContext } from "react";
 // import axios from "axios";
 // import { toast } from "react-hot-toast";
 // import { useNavigate } from "react-router-dom";
-// //import { AdminContext } from "../../context/adminContext";
-// console.log("adminContext import starting");
 // import { AdminContext } from "../../context/adminContext";
 
 // export default function AdminLogin() {
@@ -64,6 +131,13 @@
 
 //         <button type="submit">Login</button>
 //       </form>
+
+//       <p>
+//         Don't have an account?{' '}
+//         <span className="signup-link" onClick={() => navigate('/adminregister')}>
+//           Sign up
+//         </span>
+//       </p>
 //     </div>
 //   );
 // }
@@ -94,11 +168,11 @@ export default function AdminLogin() {
         { withCredentials: true }
       );
 
-      if (response.data.error) {
+      if (response.data?.error) {
         toast.error(response.data.error);
       } else {
         toast.success("Admin login successful!");
-        setAdmin(response.data.admin);
+        setAdmin(response.data.admin); // make sure your backend returns `admin` field
         setData({ email: "", password: "" });
         navigate("/admindashboard");
       }
@@ -133,8 +207,8 @@ export default function AdminLogin() {
       </form>
 
       <p>
-        Don't have an account?{' '}
-        <span className="signup-link" onClick={() => navigate('/adminregister')}>
+        Don&apos;t have an account?{" "}
+        <span className="signup-link" onClick={() => navigate("/adminregister")}>
           Sign up
         </span>
       </p>
