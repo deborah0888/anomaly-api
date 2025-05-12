@@ -16,6 +16,7 @@ import  Reviews from '../src/pages/Reviews';
 import  Blog from '../src/pages/Blog';
 import  Faqs from '../src/pages/Faqs';
 import  UserHistory from '../src/pages/UserHistory';
+import  UserHistoryPage from '../src/pages/UserHistoryPage';
 import { Toaster } from 'react-hot-toast';
 import { UserContextProvider } from '../context/userContext';
 import axios from 'axios';
@@ -49,6 +50,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/faqs" element={<Faqs />} />
              <Route path="/history" element={<UserHistory />} />
+             <Route path="/admin/user/:userId/history" element={<UserHistoryPage />} />
           </Routes>
         </div>
       </AdminContextProvider>

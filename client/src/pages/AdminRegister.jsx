@@ -2,52 +2,48 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
+import '../styles/Register.css';
 export default function AdminRegister() {
   const navigate = useNavigate();
   const [data, setData] = useState({
-    name: "",
-    email: "",
-    password: "",
+    name: '',
+    email: '',
+    password: '',
   });
 
   const registerAdmin = async (e) => {
     e.preventDefault();
-
-    const { name, email, password } = data;
-    if (!name || !email || !password) {
-      toast.error("All fields are required!");
-      return;
-    }
-
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/admin/register",
-        {
-          name,
-          email,
-          password,
-        }
-      );
+      const { name, email, password } = data;
+      if (!name || !email || !password) {
+        toast.error("All fields are required!");
+        return;
+      }
+
+      const response = await axios.post('http://localhost:8000/api/admin/register', {
+        name,
+        email,
+        password,
+      });
 
       if (response.data.error) {
         toast.error(response.data.error);
       } else {
-        toast.success("Admin registration successful!");
-        setData({ name: "", email: "", password: "" });
-        navigate("/adminlogin");
+        toast.success('Admin registration successful! Redirecting...');
+        setData({ name: '', email: '', password: '' }); // Reset form
+        navigate('/adminlogin');
       }
     } catch (error) {
-      console.error("Admin Registration Error:", error);
-      toast.error(
-        error.response?.data?.error || "Admin registration failed"
-      );
+      console.error('Admin Registration Error:', error.response?.data || error.message);
+      toast.error(error.response?.data?.error || 'Registration failed');
     }
   };
 
   return (
-    <div>
+    <div className="register-container">
       <form onSubmit={registerAdmin}>
+        <h1>Admin Register</h1>
+
         <label>Name</label>
         <input
           type="text"
@@ -75,8 +71,15 @@ export default function AdminRegister() {
           required
         />
 
-        <button type="submit">Register</button>
+        <button type="submit">Submit</button>
       </form>
+
+      <p>
+        Already have an account?{" "}
+        <span className="signup-link" onClick={() => navigate("/adminlogin")}>
+          Login
+        </span>
+      </p>
     </div>
   );
 }
