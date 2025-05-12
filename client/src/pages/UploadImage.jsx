@@ -41,7 +41,8 @@ const UploadImage = () => {
         withCredentials: true,
       });
       alert("Image uploaded!");
-      setImageUrls(res.data.user.imageUrls);
+      //setImageUrls(res.data.user.imageUrls);
+      setImageUrls(res.data.user.images.map(img => img.imageUrl));
     } catch (err) {
       console.error(err);
       alert("Upload failed.");

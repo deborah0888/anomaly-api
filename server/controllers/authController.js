@@ -111,6 +111,64 @@ const getProfile = async (req, res) => {
 };
 
 
+// const uploadImage = async (req, res) => {
+//   try {
+//     const { userId } = req.body;
+
+//     if (!req.file) {
+//       console.log("❌ No file uploaded");
+//       return res.status(400).json({ error: "No file uploaded" });
+//     }
+
+//     const imagePath = req.file.path;
+//     const imageStream = fs.createReadStream(imagePath);
+
+//     const formData = new FormData();
+//     formData.append("image", imageStream);
+
+//     // Send image to Flask server for prediction
+//     const flaskRes = await axios.post(
+//       "http://localhost:5001/predict",
+//       formData,
+//       {
+//         headers: formData.getHeaders(),
+//       }
+//     );
+
+//     const { is_anomalous, error } = flaskRes.data;
+
+//     const newImageEntry = {
+//       imageUrl: `/uploads/${req.file.filename}`,
+//       anomalyScore: error,
+//       isAnomalous: is_anomalous,
+//       uploadedAt: new Date(),
+//     };
+
+//     // Update the user's image array in MongoDB
+//     const user = await User.findByIdAndUpdate(
+//       userId,
+//       { $push: { images: newImageEntry } },
+//       { new: true }
+//     ).select("-password");
+
+//     // ✅ Debug logs
+//     console.log("🧠 Flask Response:", flaskRes.data);
+//     console.log("🖼️ New Image Entry:", newImageEntry);
+//     console.log("📥 Updating User ID:", userId);
+//     console.log("📦 Updated User Images:", user.images);
+
+//     res.status(200).json({
+//       is_anomalous,
+//       error,
+//       imageUrl: newImageEntry.imageUrl,
+//       mongo_save: true,
+//       user, // Include updated user object
+//     });
+//   } catch (err) {
+//     console.error("❌ Upload Error:", err.message);
+//     res.status(500).json({ error: "Image upload failed" });
+//   }
+// };
 const uploadImage = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -130,11 +188,11 @@ const uploadImage = async (req, res) => {
     const flaskRes = await axios.post(
       "http://localhost:5001/predict",
       formData,
-      {
+//@@ -129,27 +135,45 @@ const uploadImage = async (req, res) => {
+  {
         headers: formData.getHeaders(),
       }
     );
-
     const { is_anomalous, error } = flaskRes.data;
 
     const newImageEntry = {
@@ -143,11 +201,10 @@ const uploadImage = async (req, res) => {
       isAnomalous: is_anomalous,
       uploadedAt: new Date(),
     };
-
-    // Update the user's image array in MongoDB
+ // Update the user's image array in MongoDB
     const user = await User.findByIdAndUpdate(
       userId,
-      { $push: { images: newImageEntry } },
+       { $push: { images: newImageEntry } },
       { new: true }
     ).select("-password");
 
@@ -159,7 +216,7 @@ const uploadImage = async (req, res) => {
 
     res.status(200).json({
       is_anomalous,
-      error,
+          error,
       imageUrl: newImageEntry.imageUrl,
       mongo_save: true,
       user, // Include updated user object

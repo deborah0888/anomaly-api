@@ -47,20 +47,7 @@ const Dashboard = () => {
         anomalyScore: data.error,
       });
 
-      // if (data.imageUrl) {
-      //   // Revoke the previous object URL
-      //   if (previewUrl && previewUrl.startsWith('blob:')) {
-      //     URL.revokeObjectURL(previewUrl);
-      //   }
-      //   // Set new preview URL from server
-      //   const serverImageUrl = `http://localhost:8000${data.imageUrl}`;
-      //   setPreviewUrl(serverImageUrl);
-
-      //   setUser((prevUser) => ({
-      //     ...prevUser,
-      //     imageUrl: data.imageUrl,
-      //   }));
-      // }
+    
       if (data.imageUrl) {
         // Revoke the previous object URL
         if (previewUrl && previewUrl.startsWith('blob:')) {

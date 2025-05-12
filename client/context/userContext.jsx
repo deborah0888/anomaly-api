@@ -26,22 +26,23 @@ export const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
-      axios
-        .get('http://localhost:8000/api/auth/profile', { withCredentials: true })
-        .then(({ data }) => {
-          setUser(data);
-        })
-        .catch((err) => {
-          console.error('Error fetching profile:', err);
-        });
-    }
-  }, [user]);
+    axios
+      .get('http://localhost:8000/api/auth/profile', { withCredentials: true })
+      .then(({ data }) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Error fetching profile:', err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );
