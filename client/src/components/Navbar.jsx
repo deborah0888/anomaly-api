@@ -979,20 +979,20 @@ const Navbar = () => {
           <>
             <Link to="/admindashboard" className="nav-item">Admin Dashboard</Link>
             <Link to="/contacts" className="nav-item">Contacts</Link>
-            <Link to="/logout" className="nav-item">Logout</Link>
+            <Link to="/" className="nav-item">Logout</Link>
           </>
         ) : user ? (
           <>
             <Link to="/dashboard" className="nav-item">Dashboard</Link>
-            <Link to="/history" className="nav-item">History</Link>
+            <Link to="/userhistory" className="nav-item">History</Link>
             <Link to="/profile" className="nav-item">Profile</Link>
-            <Link to="/logout" className="nav-item">Logout</Link>
+            <Link to="/" className="nav-item">Logout</Link>
           </>
         ) : (
           <>
             <Link to="/" className="nav-item">Home</Link>
             <Link to="/about" className="nav-item">About</Link>
-            <Link to="/contact" className="nav-item">Contact</Link>
+            <Link to="/contact" className="nav-item">Contact Us</Link>
             <Link to="/reviews" className="nav-item">Reviews</Link>
             <Link to="/blog" className="nav-item">Blog</Link>
             <Link to="/faqs" className="nav-item">FAQ</Link>

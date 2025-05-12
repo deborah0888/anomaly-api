@@ -117,6 +117,8 @@ const path = require("path");
 
 const authRoutes = require("./routes/authRoutes");
 const adminAuthRoutes = require("./routes/adminAuthRoutes");
+const adminContactRoutes = require("./routes/adminContact");
+
 
 const app = express();
 
@@ -137,7 +139,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminAuthRoutes);
-
+app.use("/api/admin/contacts", adminContactRoutes);
 // Feedback, contact, reviews, image, etc. (as you already had)
 const Feedback = require("./models/feedback");
 const Contact = require("./models/contact");

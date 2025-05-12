@@ -81,10 +81,12 @@ import AdminLogin from '../src/pages/AdminLogin';
 import AdminDashboard from '../src/pages/AdminDashboard';
 import  About from '../src/pages/About';
 import  Contact from '../src/pages/Contact';
+import  Contacts from '../src/pages/Contacts';
 import  Feedback from '../src/pages/Feedback';
 import  Reviews from '../src/pages/Reviews';
 import  Blog from '../src/pages/Blog';
 import  Faqs from '../src/pages/Faqs';
+import  UserHistory from '../src/pages/userhistory';
 import { Toaster } from 'react-hot-toast';
 import { UserContextProvider } from '../context/userContext';
 import axios from 'axios';
@@ -112,10 +114,12 @@ function App() {
             <Route path="/admindashboard" element={<AdminDashboard />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/contacts" element={<Contacts />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/faqs" element={<Faqs />} />
+             <Route path="/userhistory" element={<UserHistory />} />
           </Routes>
         </div>
       </AdminContextProvider>
