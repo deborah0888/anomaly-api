@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import "../styles/Register.css"; // ✅ Import the styling
+import "../styles/Register.css";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -14,13 +14,14 @@ export default function Register() {
 
   const registerUser = async (e) => {
     e.preventDefault();
-    try {
-      const { name, email, password } = data;
-      if (!name || !email || !password) {
-        toast.error("All fields are required!");
-        return;
-      }
+    const { name, email, password } = data;
 
+    if (!name || !email || !password) {
+      toast.error("All fields are required!");
+      return;
+    }
+
+    try {
       const response = await axios.post("http://localhost:8000/api/auth/register", {
         name,
         email,
@@ -32,7 +33,7 @@ export default function Register() {
       } else {
         toast.success("Registration successful! Redirecting...");
         localStorage.setItem("token", response.data.token);
-        setData({ name: "", email: "", password: "" }); // Reset form
+        setData({ name: "", email: "", password: "" });
         navigate("/login");
       }
     } catch (error) {
@@ -43,6 +44,7 @@ export default function Register() {
 
   return (
     <div className="register-container">
+      <h1 className="register-heading">Sign Up</h1>
       <form onSubmit={registerUser}>
         <label>Name</label>
         <input
@@ -73,6 +75,12 @@ export default function Register() {
 
         <button type="submit">Submit</button>
       </form>
+      <p>
+        Already have an account?{" "}
+        <span className="signup-link" onClick={() => navigate("/login")}>
+          Login
+        </span>
+      </p>
     </div>
   );
 }

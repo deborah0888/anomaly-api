@@ -41,8 +41,9 @@ export default function AdminRegister() {
 
   return (
     <div className="register-container">
+      <h1 className="register-heading">Sign Up</h1>
       <form onSubmit={registerAdmin}>
-        <h1>Admin Register</h1>
+        
 
         <label>Name</label>
         <input

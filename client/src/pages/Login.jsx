@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
-import "../styles/Login.css"; // ✅ Import the styling
+import "../styles/Login.css";
 
 export default function Login() {
   const { fetchProfile } = useContext(UserContext);
@@ -43,6 +43,7 @@ export default function Login() {
 
   return (
     <div className="login-container">
+      <h2 className="login-heading">Login</h2>
       <form onSubmit={loginUser}>
         <label>Email</label>
         <input

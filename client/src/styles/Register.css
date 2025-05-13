@@ -3,62 +3,68 @@
   max-width: 600px;
   margin: 80px auto;
   padding: 30px;
-  background: #ffffff; /* White container */
+  background: #ffffff;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   font-family: 'Arial', sans-serif;
 }
 
-.register-container h1 {
+.register-heading {
   font-size: 2rem;
   font-weight: 700;
-  color: #000000; /* Black text */
-  margin-bottom: 20px;
+  color: #0051ff;
+  margin-bottom: 15px;
 }
 
 .register-container form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 14px;
+  text-align: left;
 }
 
 .register-container label {
   font-size: 1rem;
   font-weight: 600;
-  color: #000000; /* Black text for labels */
-  text-align: left;
+  color: #000000;
 }
 
 .register-container input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 1rem;
-  color: #000000; /* Black text inside inputs */
-  background-color: #ffffff; /* White background for input fields */
+  color: #000000;
+  background-color: #ffffff;
+}
+
+.register-container input:focus {
+  outline: none;
+  border-color: #0051ff;
 }
 
 .register-container button {
-  padding: 10px;
+  padding: 12px;
   font-size: 1rem;
   color: white;
   background-color: #0051ff;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .register-container button:hover {
   background-color: #003bb3;
+  transform: scale(1.03);
 }
 
 .register-container p {
   margin-top: 15px;
   font-size: 1rem;
-  color: #000000; /* Black text for paragraph */
+  color: #000000;
 }
 
 .register-container .signup-link {
@@ -78,7 +84,7 @@
     padding: 20px;
   }
 
-  .register-container h1 {
+  .register-heading {
     font-size: 1.8rem;
   }
 }
