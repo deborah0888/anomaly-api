@@ -28,12 +28,12 @@ const Dashboard = () => {
   };
 
   const handleUpload = async () => {
-    if (!file || !user?.id) return alert("Please select a file and login first!");
+    if (!file || !user?._id) return alert("Please select a file and login first!");
 
     setUploading(true);
     const formData = new FormData();
     formData.append("image", file);
-    formData.append("userId", user.id);
+    formData.append("userId", user._id);
 
     try {
       const { data } = await axios.post("http://localhost:8000/api/auth/upload", formData, {

@@ -6,22 +6,23 @@ const UploadImage = () => {
   const [image, setImage] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
   const [userId, setUserId] = useState(""); // Replace with actual user ID logic
-
-  useEffect(() => {
-    // Fetch profile to get userId and image history
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.get("http://localhost:8000/api/auth/profile", { withCredentials: true });
-        setUserId(res.data._id);
-        //setImageUrls(res.data.imageUrls || []);
-        setImageUrls(res.data.user.images.map(img => img.imageUrl));
-
-      } catch (err) {
-        console.error("❌ Error fetching profile:", err);
-      }
-    };
-    fetchUserData();
-  }, []);
+  const [loading, setLoading] = useState(true);
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/auth/profile", {
+        withCredentials: true,
+      });
+      setUserId(res.data._id);
+      setImageUrls(res.data.user.images.map((img) => img.imageUrl));
+    } catch (err) {
+      console.error("❌ Error fetching profile:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchUserData();
+}, []);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -29,12 +30,15 @@ const UploadImage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!image || !userId) return alert("Please select image and ensure user is logged in.");
+//     if (loading || !image || !userId){ console.log("🧪 image:", image);
+// console.log("🧪 userId:", userId);
+// return alert("Please select image and ensure user is logged in.");} 
 
+if (!image) return alert("Please select an image.");
+if (!userId) return alert("User not loaded. Try refreshing or logging in again.");
     const formData = new FormData();
     formData.append("image", image);
     formData.append("userId", userId);
-
     try {
       const res = await axios.post("http://localhost:8000/api/auth/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -56,7 +60,6 @@ const UploadImage = () => {
         <input type="file" onChange={handleImageChange} required />
         <button type="submit">Upload</button>
       </form>
-
       <h2>Your Image History</h2>
       <div className="image-gallery">
         {imageUrls.map((url, index) => (

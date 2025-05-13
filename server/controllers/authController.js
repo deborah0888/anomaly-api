@@ -95,80 +95,42 @@ const loginUser = async (req, res) => {
   }
 };
 
-// Get User Profile
 const getProfile = async (req, res) => {
+  console.log("🔍 Cookies received:", req.cookies);
+
   const { token } = req.cookies;
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+  if (!token) {
+    console.log("❌ No token found in cookies.");
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-    if (err) return res.status(403).json({ error: "Invalid token" });
+    if (err) {
+      console.log("❌ Token verification failed:", err.message);
+      return res.status(403).json({ error: "Invalid token" });
+    }
 
-    const user = await User.findById(decoded.id).select("-password");
-    if (!user) return res.status(404).json({ error: "User not found" });
+    console.log("✅ Token decoded successfully:", decoded);
 
-    res.json(user);
+    try {
+      const user = await User.findById(decoded.id).select("-password");
+
+      if (!user) {
+        console.log("❌ User not found with ID:", decoded.id);
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      console.log("✅ User found:", user._id);
+      res.json(user);
+    } catch (err) {
+      console.log("❌ Error fetching user from DB:", err.message);
+      res.status(500).json({ error: "Failed to fetch user profile" });
+    }
   });
 };
 
 
-// const uploadImage = async (req, res) => {
-//   try {
-//     const { userId } = req.body;
-
-//     if (!req.file) {
-//       console.log("❌ No file uploaded");
-//       return res.status(400).json({ error: "No file uploaded" });
-//     }
-
-//     const imagePath = req.file.path;
-//     const imageStream = fs.createReadStream(imagePath);
-
-//     const formData = new FormData();
-//     formData.append("image", imageStream);
-
-//     // Send image to Flask server for prediction
-//     const flaskRes = await axios.post(
-//       "http://localhost:5001/predict",
-//       formData,
-//       {
-//         headers: formData.getHeaders(),
-//       }
-//     );
-
-//     const { is_anomalous, error } = flaskRes.data;
-
-//     const newImageEntry = {
-//       imageUrl: `/uploads/${req.file.filename}`,
-//       anomalyScore: error,
-//       isAnomalous: is_anomalous,
-//       uploadedAt: new Date(),
-//     };
-
-//     // Update the user's image array in MongoDB
-//     const user = await User.findByIdAndUpdate(
-//       userId,
-//       { $push: { images: newImageEntry } },
-//       { new: true }
-//     ).select("-password");
-
-//     // ✅ Debug logs
-//     console.log("🧠 Flask Response:", flaskRes.data);
-//     console.log("🖼️ New Image Entry:", newImageEntry);
-//     console.log("📥 Updating User ID:", userId);
-//     console.log("📦 Updated User Images:", user.images);
-
-//     res.status(200).json({
-//       is_anomalous,
-//       error,
-//       imageUrl: newImageEntry.imageUrl,
-//       mongo_save: true,
-//       user, // Include updated user object
-//     });
-//   } catch (err) {
-//     console.error("❌ Upload Error:", err.message);
-//     res.status(500).json({ error: "Image upload failed" });
-//   }
-// };
 const uploadImage = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -188,11 +150,11 @@ const uploadImage = async (req, res) => {
     const flaskRes = await axios.post(
       "http://localhost:5001/predict",
       formData,
-//@@ -129,27 +135,45 @@ const uploadImage = async (req, res) => {
-  {
+      {
         headers: formData.getHeaders(),
       }
     );
+
     const { is_anomalous, error } = flaskRes.data;
 
     const newImageEntry = {
@@ -201,10 +163,11 @@ const uploadImage = async (req, res) => {
       isAnomalous: is_anomalous,
       uploadedAt: new Date(),
     };
- // Update the user's image array in MongoDB
+
+    // Update the user's image array in MongoDB
     const user = await User.findByIdAndUpdate(
       userId,
-       { $push: { images: newImageEntry } },
+      { $push: { images: newImageEntry } },
       { new: true }
     ).select("-password");
 
@@ -216,7 +179,7 @@ const uploadImage = async (req, res) => {
 
     res.status(200).json({
       is_anomalous,
-          error,
+      error,
       imageUrl: newImageEntry.imageUrl,
       mongo_save: true,
       user, // Include updated user object

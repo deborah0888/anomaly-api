@@ -1,105 +1,3 @@
-// // controllers/adminAuthController.js
-// const jwt = require("jsonwebtoken");
-// const bcrypt = require("bcryptjs");
-// const AdminUser = require("../models/adminUser");
-// const { comparePassword, hashPassword } = require("../utils/auth");
-
-// // Admin registration
-// const registerAdmin = async (req, res) => {
-//   try {
-//     const { name, email, password } = req.body;
-//     if (!name || !email || !password) {
-//       return res.status(400).json({ error: "All fields are required" });
-//     }
-
-//     const existingAdmin = await AdminUser.findOne({ email });
-//     if (existingAdmin) {
-//       return res.status(400).json({ error: "Email already in use" });
-//     }
-
-//     const hashedPassword = await hashPassword(password);
-//     const newAdmin = new AdminUser({
-//       name,
-//       email,
-//       password: hashedPassword,
-//     });
-//     await newAdmin.save();
-
-//     // Generate JWT token for the admin
-//     const token = jwt.sign({ id: newAdmin._id }, process.env.JWT_SECRET, {
-//       expiresIn: "7d",
-//     });
-
-//     res
-//       .cookie("token", token, { httpOnly: true, sameSite: "strict" })
-//       .status(201)
-//       .json({
-//         success: true,
-//         admin: {
-//           id: newAdmin._id,
-//           name: newAdmin.name,
-//           email: newAdmin.email,
-//         },
-//         token,
-//       });
-//   } catch (error) {
-//     console.error("❌ Registration Error:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
-// // Admin login
-// const loginAdmin = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-//     if (!email || !password) {
-//       return res.status(400).json({ error: "Email and password are required!" });
-//     }
-
-//     const admin = await AdminUser.findOne({ email });
-//     if (!admin || !(await comparePassword(password, admin.password))) {
-//       return res.status(400).json({ error: "Invalid email or password!" });
-//     }
-
-//     const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
-//       expiresIn: "7d",
-//     });
-
-//     res.cookie("token", token, { httpOnly: true, sameSite: "strict" }).json({
-//       success: true,
-//       admin: {
-//         id: admin._id,
-//         name: admin.name,
-//         email: admin.email,
-//       },
-//       token,
-//     });
-//   } catch (error) {
-//     console.error("❌ Login Error:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
-// // Get Admin Profile
-// const getAdminProfile = async (req, res) => {
-//   const { token } = req.cookies;
-//   if (!token) return res.status(401).json({ error: "Unauthorized" });
-
-//   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-//     if (err) return res.status(403).json({ error: "Invalid token" });
-
-//     const admin = await AdminUser.findById(decoded.id).select("-password");
-//     if (!admin) return res.status(404).json({ error: "Admin not found" });
-
-//     res.json(admin);
-//   });
-// };
-
-// module.exports = {
-//   registerAdmin,
-//   loginAdmin,
-//   getAdminProfile,
-// };
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Admin = require("../models/admin"); // Create this model similar to User
@@ -125,7 +23,7 @@ const registerAdmin = async (req, res) => {
       expiresIn: "7d",
     });
 
-    res.cookie("adminToken", token, { httpOnly: true, sameSite: "strict" }).status(201).json({
+    res.cookie("adminToken", token, { httpOnly: true, sameSite: "strict" ,secure: false, }).status(201).json({
       success: true,
       admin: {
         id: newAdmin._id,
