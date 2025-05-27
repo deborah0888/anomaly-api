@@ -17,6 +17,7 @@ import  Blog from '../src/pages/Blog';
 import  Faqs from '../src/pages/Faqs';
 import  UserHistory from '../src/pages/UserHistory';
 import  UserHistoryPage from '../src/pages/UserHistoryPage';
+import  CategorySelection from '../src/pages/CategorySelection';
 import { Toaster } from 'react-hot-toast';
 import { UserContextProvider } from '../context/userContext';
 import axios from 'axios';
@@ -51,6 +52,7 @@ function App() {
             <Route path="/faqs" element={<Faqs />} />
              <Route path="/history" element={<UserHistory />} />
              <Route path="/admin/user/:userId/history" element={<UserHistoryPage />} />
+             <Route path="/select-category" element={<CategorySelection />} />
           </Routes>
         </div>
       </AdminContextProvider>

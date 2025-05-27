@@ -33,7 +33,7 @@ export default function Login() {
         toast.success("Login successful!");
         await fetchProfile();
         setData({ email: "", password: "" });
-        navigate("/dashboard");
+        navigate("/select-category");
       }
     } catch (error) {
       console.error("Login Error:", error);

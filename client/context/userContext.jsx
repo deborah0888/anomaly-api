@@ -1,93 +1,7 @@
-// // // import axios from 'axios'
-// // // import {createContext,useState,useEffect} from 'react';
-
-// // // export const UserContext =createContext({})
-
-// // // export function UserContextProvider({children}){
-// // //     const [user,setUser] =useState(null);
-// // //     useEffect(()=> {
-// // //         if(!user){
-// // //             axios.get('/profile').then(({data})=>{
-// // //                 setUser(data)
-// // //             })
-// // //         }
-// // //     },[]);
-// // //     return(
-// // //         <UserContext.Provider value={{user,setUser}}>
-// // //             {children}
-// // //         </UserContext.Provider>
-
-// // //     )
-// // // }
-// // import axios from 'axios'
-// // import { createContext, useState, useEffect } from 'react';
-
-// // export const UserContext = createContext({});
-
-// // export function UserContextProvider({ children }) {
-// //   const [user, setUser] = useState(null);
-// //   const [loading, setLoading] = useState(true);
-
-// //   useEffect(() => {
-// //     axios
-// //       .get('http://localhost:8000/api/auth/profile', { withCredentials: true })
-// //       .then(({ data }) => {
-// //         setUser(data);
-// //         setLoading(false);
-// //       })
-// //       .catch((err) => {
-// //         console.error('Error fetching profile:', err);
-// //         setLoading(false);
-// //       });
-// //   }, []);
-
-// //   return (
-// //     <UserContext.Provider value={{ user, setUser, loading }}>
-// //       {children}
-// //     </UserContext.Provider>
-// //   );
-// // }
 // import axios from 'axios'
 // import { createContext, useState, useEffect } from 'react';
 
 // export const UserContext = createContext({});
-
-// export function UserContextProvider({ children }) {
-//   const [user, setUser] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     axios
-//       .get('http://localhost:8000/api/auth/profile', { withCredentials: true })
-//       .then(({ data }) => {
-//         console.log('Fetched user data:', data); 
-//         setUser(data);
-//         setLoading(false);
-//       })
-//       .catch((err) => {
-//         console.error('Error fetching profile:', err);
-//         setLoading(false);
-//       });
-//   }, []);
-
-//   // Function to handle logout
-//   const logout = async () => {
-//     try {
-//       await axios.post('http://localhost:8000/api/auth/logout', {}, { withCredentials: true });
-//       setUser(null);  // Clear the user data
-//     } catch (err) {
-//       console.error("Logout error:", err);
-//     }
-//   };
-
-//   return (
-//     <UserContext.Provider value={{ user, setUser, loading, logout }}>
-//       {children}
-//     </UserContext.Provider>
-//   );
-// }
-import axios from 'axios'
-import { createContext, useState, useEffect } from 'react';
 
 // export function UserContextProvider({ children }) {
 //   const [user, setUser] = useState(null);
@@ -123,6 +37,9 @@ import { createContext, useState, useEffect } from 'react';
 //     </UserContext.Provider>
 //   );
 // }
+import axios from 'axios';
+import { createContext, useState, useEffect } from 'react';
+
 export const UserContext = createContext({});
 
 export function UserContextProvider({ children }) {
@@ -132,8 +49,11 @@ export function UserContextProvider({ children }) {
   const fetchProfile = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem("token");
       const { data } = await axios.get("http://localhost:8000/api/auth/profile", {
-        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
       setUser(data);
     } catch (err) {
@@ -149,7 +69,13 @@ export function UserContextProvider({ children }) {
   }, []);
 
   const logout = async () => {
-    await axios.post("http://localhost:8000/api/auth/logout", {}, { withCredentials: true });
+    const token = localStorage.getItem("token");
+    await axios.post("http://localhost:8000/api/auth/logout", {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    localStorage.removeItem("token");
     setUser(null);
   };
 
