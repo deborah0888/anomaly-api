@@ -20,8 +20,9 @@ const {
   registerUser,
   loginUser,
   getProfile,
-  uploadImage,
 } = require("../controllers/authController");
+const verifyToken = require("../middleware/verifyToken");
+const { uploadImage } = require("../controllers/uploadController");
 const upload = require("../utils/multer");
 
 // Authentication Routes
@@ -36,5 +37,9 @@ router.post("/logout", (req, res) => {
 
 // Image Upload Route
 router.post("/upload", upload.single("image"), uploadImage);
+// router.post("/upload", verifyToken, upload.single("image"), (req, res) => {
+//   req.body.userId = req.userId; // userId from token attached by middleware
+//   uploadImage(req, res);
+// });
 
 module.exports = router;

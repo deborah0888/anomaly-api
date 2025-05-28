@@ -130,7 +130,6 @@ const getProfile = async (req, res) => {
   });
 };
 
-
 const uploadImage = async (req, res) => {
   try {
     const { userId } = req.body;
@@ -144,7 +143,7 @@ const uploadImage = async (req, res) => {
     const imageStream = fs.createReadStream(imagePath);
 
     const formData = new FormData();
-    formData.append("image", imageStream);
+    formData.append("file", imageStream);
 
     // Send image to Flask server for prediction
     const flaskRes = await axios.post(

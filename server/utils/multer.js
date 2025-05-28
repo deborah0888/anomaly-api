@@ -64,15 +64,39 @@
 // // Upload Instance
 // const upload = multer({ storage, fileFilter });
 
+// // module.exports = upload;
+// // utils/multer.js
+// const multer = require("multer");
+// const path = require("path");
+
+// // Set storage destination and filename
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads/"); // This is your local folder
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueName = Date.now() + "-" + file.originalname;
+//     cb(null, uniqueName);
+//   },
+// });
+
+// // const multer = require('multer');
+
+// // Memory storage configuration to store files in buffer
+// // const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
+// // app.post('/api/auth/upload', upload.single('image'), uploadImage);
+
 // module.exports = upload;
-// utils/multer.js
+// ?27-05
 const multer = require("multer");
 const path = require("path");
 
 // Set storage destination and filename
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // This is your local folder
+    cb(null, "uploads/"); // local folder
   },
   filename: function (req, file, cb) {
     const uniqueName = Date.now() + "-" + file.originalname;
@@ -80,12 +104,15 @@ const storage = multer.diskStorage({
   },
 });
 
-// const multer = require('multer');
+// Filter to allow only image files
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed!"), false);
+  }
+};
 
-// Memory storage configuration to store files in buffer
-// const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-// app.post('/api/auth/upload', upload.single('image'), uploadImage);
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 module.exports = upload;
