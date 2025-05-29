@@ -1,17 +1,40 @@
-// // // // const multer = require('multer');
+// // // // // const multer = require('multer');
 
-// // // // Multer Storage (Use memory storage for Cloudinary)
+// // // // // Multer Storage (Use memory storage for Cloudinary)
+// // // // const storage = multer.memoryStorage();
+
+// // // // // File Filter (Only allow images)
+// // // // const fileFilter = (req, file, cb) => {
+// // // //   const allowedTypes = /jpeg|jpg|png/;
+// // // //   const mimetype = allowedTypes.test(file.mimetype);
+
+// // // //   if (extname && mimetype) {
+// // // //     return cb(null, true);
+// // // //   } else {
+// // // //     return cb(new Error('Only images (JPEG, JPG, PNG) are allowed!'), false);
+// // // //   }
+// // // // };
+
+// // // // // Upload Instance
+// // // // const upload = multer({ storage, fileFilter });
+
+// // // // module.exports = upload;
+// // // const multer = require('multer');
+// // // const path = require('path');
+
+// // // // Storage Configuration (Using Memory Storage for Cloudinary)
 // // // const storage = multer.memoryStorage();
 
 // // // // File Filter (Only allow images)
 // // // const fileFilter = (req, file, cb) => {
 // // //   const allowedTypes = /jpeg|jpg|png/;
+// // //   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
 // // //   const mimetype = allowedTypes.test(file.mimetype);
 
 // // //   if (extname && mimetype) {
 // // //     return cb(null, true);
 // // //   } else {
-// // //     return cb(new Error('Only images (JPEG, JPG, PNG) are allowed!'), false);
+// // //     return cb(new Error('Only images (JPEG, JPG, PNG) are allowed!'));
 // // //   }
 // // // };
 
@@ -22,7 +45,7 @@
 // // const multer = require('multer');
 // // const path = require('path');
 
-// // // Storage Configuration (Using Memory Storage for Cloudinary)
+// // // Storage Configuration (Memory Storage for Cloudinary)
 // // const storage = multer.memoryStorage();
 
 // // // File Filter (Only allow images)
@@ -41,38 +64,39 @@
 // // // Upload Instance
 // // const upload = multer({ storage, fileFilter });
 
+// // // module.exports = upload;
+// // // utils/multer.js
+// // const multer = require("multer");
+// // const path = require("path");
+
+// // // Set storage destination and filename
+// // const storage = multer.diskStorage({
+// //   destination: function (req, file, cb) {
+// //     cb(null, "uploads/"); // This is your local folder
+// //   },
+// //   filename: function (req, file, cb) {
+// //     const uniqueName = Date.now() + "-" + file.originalname;
+// //     cb(null, uniqueName);
+// //   },
+// // });
+
+// // // const multer = require('multer');
+
+// // // Memory storage configuration to store files in buffer
+// // // const storage = multer.memoryStorage();
+// // const upload = multer({ storage: storage });
+
+// // // app.post('/api/auth/upload', upload.single('image'), uploadImage);
+
 // // module.exports = upload;
-// const multer = require('multer');
-// const path = require('path');
-
-// // Storage Configuration (Memory Storage for Cloudinary)
-// const storage = multer.memoryStorage();
-
-// // File Filter (Only allow images)
-// const fileFilter = (req, file, cb) => {
-//   const allowedTypes = /jpeg|jpg|png/;
-//   const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-//   const mimetype = allowedTypes.test(file.mimetype);
-
-//   if (extname && mimetype) {
-//     return cb(null, true);
-//   } else {
-//     return cb(new Error('Only images (JPEG, JPG, PNG) are allowed!'));
-//   }
-// };
-
-// // Upload Instance
-// const upload = multer({ storage, fileFilter });
-
-// // module.exports = upload;
-// // utils/multer.js
+// // ?27-05
 // const multer = require("multer");
 // const path = require("path");
 
 // // Set storage destination and filename
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
-//     cb(null, "uploads/"); // This is your local folder
+//     cb(null, "uploads/"); // local folder
 //   },
 //   filename: function (req, file, cb) {
 //     const uniqueName = Date.now() + "-" + file.originalname;
@@ -80,23 +104,25 @@
 //   },
 // });
 
-// // const multer = require('multer');
+// // Filter to allow only image files
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith("image/")) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Only image files are allowed!"), false);
+//   }
+// };
 
-// // Memory storage configuration to store files in buffer
-// // const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage });
-
-// // app.post('/api/auth/upload', upload.single('image'), uploadImage);
+// const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 // module.exports = upload;
-// ?27-05
 const multer = require("multer");
 const path = require("path");
 
-// Set storage destination and filename
+// Storage destination and unique filename
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // local folder
+    cb(null, "uploads/"); // Store in uploads folder
   },
   filename: function (req, file, cb) {
     const uniqueName = Date.now() + "-" + file.originalname;
@@ -104,7 +130,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// Filter to allow only image files
+// Allow only image files
 const fileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) {
     cb(null, true);
@@ -113,6 +139,6 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({ storage: storage, fileFilter: fileFilter });
+const upload = multer({ storage, fileFilter });
 
 module.exports = upload;
