@@ -174,14 +174,19 @@ form button:hover {
 .read-the-docs {
   color: #888;
 }*/
+/* Base Styles */
+/* Base Styles */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f9;
-  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('/images/digital-circle-circuit-blue-background-futuristic-technology.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: #2c3e50;
   margin: 0;
   padding: 0;
 }
 
+
+/* Main Container */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -191,42 +196,55 @@ body {
 
 /* Form Styles */
 form {
-  background: white;
+  background: rgba(255, 255, 255, 0.85); /* semi-transparent white */
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
   margin: 2rem auto;
 }
 
 form label {
   display: block;
   margin-bottom: 0.5rem;
-  font-weight: bold;
+  font-weight: 700;
+  text-align: left;
+  color: #3b3b98;
 }
 
 form input {
   width: 100%;
   padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  margin-bottom: 1.2rem;
+  border: 1px solid #ccd1ff;
+  border-radius: 8px;
   font-size: 1rem;
+  background-color: #fafbff;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input:focus {
+  outline: none;
+  border-color: #7d5fff;
+  box-shadow: 0 0 5px rgba(125, 95, 255, 0.3);
 }
 
 form button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #646cff;
+  background: linear-gradient(90deg, #7d5fff, #4c4cff);
   color: white;
-  border: none;
-  border-radius: 4px;
   font-size: 1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 form button:hover {
-  background-color: #575fdd;
+  background: linear-gradient(90deg, #4c4cff, #3b3b98);
+  transform: scale(1.02);
 }
 
 /* Toast Notification Styles */
@@ -235,8 +253,10 @@ form button:hover {
 }
 
 .Toastify__toast {
-  border-radius: 4px;
-  font-family: 'Arial', sans-serif;
+  border-radius: 6px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+  font-weight: 600;
 }
 
 .Toastify__toast--success {
@@ -280,13 +300,15 @@ form button:hover {
 
 /* Card Styles */
 .card {
-  background: white;
+  background: rgba(255, 255, 255, 0.85); /* semi-transparent */
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   margin: 2rem 0;
 }
 
+/* Read the Docs Note */
 .read-the-docs {
   color: #888;
+  font-weight: 500;
 }
