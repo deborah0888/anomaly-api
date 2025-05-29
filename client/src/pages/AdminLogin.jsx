@@ -4,11 +4,13 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/adminContext";
 import "../styles/login.css"; // Import the login.css file
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function AdminLogin() {
   const { setAdmin } = useContext(AdminContext);
   const navigate = useNavigate();
   const [data, setData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
 
   const loginAdmin = async (e) => {
     e.preventDefault();
@@ -54,15 +56,24 @@ export default function AdminLogin() {
           required
         />
 
-        <label className="login-container-label">Password</label>
-        <input
-          className="login-container-input"
-          type="password"
-          placeholder="Enter password..."
-          value={data.password}
-          onChange={(e) => setData({ ...data, password: e.target.value })}
-          required
-        />
+       <label className="login-container-label">Password</label>
+        <div className="password-wrapper">
+          <input
+            className="login-container-input"
+            type={showPassword ? "text" : "password"}
+            placeholder="Enter password..."
+            value={data.password}
+            onChange={(e) => setData({ ...data, password: e.target.value })}
+            required
+          />
+          <span
+            className="toggle-password"
+            onClick={() => setShowPassword((prev) => !prev)}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+        </div>
+
 
         <button className="login-container-button" type="submit">Login</button>
       </form>

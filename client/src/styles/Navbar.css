@@ -6,9 +6,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.8rem; /* Increased padding */
-  background: white;
-  border-bottom: 3px solid rgba(0, 0, 0, 0.15); /* More defined border */
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  /* background: white;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.15); 
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); */
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+backdrop-filter: blur(10px); /* Adds glassmorphism effect */
+border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Lighter border */
+box-shadow: none; /* Remove box-shadow for cleaner look */
+
   position: fixed;
   top: 0;
   left: 0;

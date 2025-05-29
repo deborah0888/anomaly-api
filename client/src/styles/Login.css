@@ -188,3 +188,28 @@
     padding: 30px;
   }
 }
+/* Password Field Wrapper */
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+/* Toggle Password Icon */
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 1.4rem;
+  
+}
+
+.toggle-password:hover {
+  color: #4c4cff;
+}
