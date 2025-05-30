@@ -23,7 +23,7 @@ import { UserContextProvider } from '../context/userContext';
 import axios from 'axios';
 import '../src/styles/App.css';
 
-axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.baseURL = 'https://your-railway-backend.up.railway.app';
 axios.defaults.withCredentials = true;
 
 import { AdminContextProvider } from '../context/adminContext';
