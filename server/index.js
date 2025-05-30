@@ -204,12 +204,9 @@ app.get("/api/reviews", async (req, res) => {
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("✅ Database Connected."))
   .catch((err) => console.error("❌ Database Connection Failed:", err));
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on ${PORT}`));
