@@ -14,7 +14,7 @@ const Contact = () => {
     setStatus('Sending...');
     
     try {
-      const response = await fetch('http://localhost:8000/api/contact', {
+      const response = await fetch('http://anomaly-detection-production-7004.up.railway.app/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

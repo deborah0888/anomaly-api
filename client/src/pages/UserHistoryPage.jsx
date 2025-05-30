@@ -10,7 +10,7 @@ export default function UserHistoryPage() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/admin/user/${userId}/history`, {
+      .get(`http://anomaly-detection-production-7004.up.railway.app/api/admin/user/${userId}/history`, {
         withCredentials: true,
       })
       .then((res) => {

@@ -118,7 +118,7 @@ export default function Register() {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/api/auth/register", {
+      const response = await axios.post("http://anomaly-detection-production-7004.up.railway.app/api/auth/register", {
         name,
         email,
         password,

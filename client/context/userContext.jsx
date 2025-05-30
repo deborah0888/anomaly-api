@@ -50,7 +50,7 @@ export function UserContextProvider({ children }) {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const { data } = await axios.get("http://localhost:8000/api/auth/profile", {
+      const { data } = await axios.get("http://anomaly-detection-production-7004.up.railway.app/api/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

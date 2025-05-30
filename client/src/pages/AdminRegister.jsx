@@ -119,7 +119,7 @@ export default function AdminRegister() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/admin/register",
+        "http://anomaly-detection-production-7004.up.railway.app/api/admin/register",
         { name, email, password }
       );
 

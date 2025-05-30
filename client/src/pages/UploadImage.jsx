@@ -63,7 +63,7 @@ if (!userId) return alert("User not loaded. Try refreshing or logging in again."
       <h2>Your Image History</h2>
       <div className="image-gallery">
         {imageUrls.map((url, index) => (
-          <img key={index} src={`http://localhost:8000${url}`} alt={`upload-${index}`} className="uploaded-image" />
+          <img key={index} src={`http://anomaly-detection-production-7004.up.railway.app${url}`} alt={`upload-${index}`} className="uploaded-image" />
         ))}
       </div>
     </div>

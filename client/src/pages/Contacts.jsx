@@ -10,7 +10,7 @@ const Contacts = () => {
     const fetchContacts = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const response = await axios.get('http://localhost:8000/api/admin/contacts', {
+        const response = await axios.get('http://anomaly-detection-production-7004.up.railway.app/api/admin/contacts', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

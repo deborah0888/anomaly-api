@@ -24,7 +24,7 @@ export default function AdminLogin() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/admin/login",
+        "http://anomaly-detection-production-7004.up.railway.app/api/admin/login",
         { email, password },
         { withCredentials: true }
       );
