@@ -70,7 +70,7 @@ export function UserContextProvider({ children }) {
 
   const logout = async () => {
     const token = localStorage.getItem("token");
-    await axios.post("http://anomaly-detection-production-7004.up.railway.app/api/auth/logout", {}, {
+    await axios.post("https://anomaly-detection-production-7004.up.railway.app/api/auth/logout", {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
