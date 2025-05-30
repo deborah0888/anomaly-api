@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import '../styles/Navbar.css';
-import Logo from './logo';
+import Logo from './Logo';
 import { Link, useNavigate } from 'react-router-dom'; // <-- useNavigate added
 import { UserContext } from '../../context/userContext';
 import { AdminContext } from '../../context/adminContext';
