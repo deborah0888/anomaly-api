@@ -10,7 +10,7 @@ export default function UserHistoryPage() {
 
   useEffect(() => {
     axios
-      .get(`http://anomaly-detection-production-7004.up.railway.app/api/admin/user/${userId}/history`, {
+      .get(`https://anomaly-detection-production-7004.up.railway.app/api/admin/user/${userId}/history`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -46,7 +46,7 @@ export default function UserHistoryPage() {
           images.map((img, idx) => (
   <div key={idx} className="history-card">
     <img
-      src={`http://localhost:8000${img.imageUrl}`}
+      src={`https://anomaly-detection-production-7004.up.railway.app${img.imageUrl}`}
       alt={`Upload ${idx}`}
     />
     <p><strong>Confidence Score:</strong> {img.confidenceScore}</p>
