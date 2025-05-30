@@ -67,14 +67,12 @@
 # if __name__ == "__main__":
 #     app.run(debug=False, port=5001)
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from inference import predict
 
-# app = Flask(__name__)
-from flask_cors import CORS
-
 app = Flask(__name__)
-# CORS(app)
-# ✅ Allow credentials explicitly
+
+# Allow CORS for frontend on localhost:5173 (update if needed)
 CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
 @app.route("/", methods=["GET"])
@@ -83,27 +81,23 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def handle_prediction():
-    print("📥 Flask upload route hit!")
-    print("🔍 /predict endpoint hit")  # ✅ Debug print
+    print("📥 /predict endpoint hit")
+
     if 'file' not in request.files or 'category' not in request.form:
-        print("⚠️ Missing file or category in request")  # ✅ Debug print
+        print("⚠️ Missing file or category in request")
         return jsonify({"error": "File or category not provided"}), 400
 
     image_file = request.files['file']
     category = request.form['category'].lower()
 
     try:
-        print(f"🔍 Received request with category: {category}")# ✅ Debug print
-        # Read image bytes once
         image_bytes = image_file.read()
-        print(f"📦 Image size (bytes): {len(image_bytes)}")# ✅ Debug print
-
+        print(f"📦 Received image of size: {len(image_bytes)} bytes")
         result = predict(category, image_bytes)
-        print(f"🧠 Model prediction: {result}")# ✅ Debug print
-
+        print(f"🧠 Prediction result: {result}")
         return jsonify(result)
     except Exception as e:
-        print(f"❌ Error in prediction: {e}")# ✅ Debug print
+        print(f"❌ Error in prediction: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
