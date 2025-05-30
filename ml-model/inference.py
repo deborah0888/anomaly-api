@@ -98,17 +98,16 @@ import numpy as np
 import requests
 import zipfile
 
-# --- Google Drive download helpers ---
+# === Google Drive download helpers ===
+
 def download_file_from_google_drive(file_id, destination):
     URL = "https://docs.google.com/uc?export=download"
     session = requests.Session()
-
     response = session.get(URL, params={'id': file_id}, stream=True)
     token = get_confirm_token(response)
 
     if token:
-        params = {'id': file_id, 'confirm': token}
-        response = session.get(URL, params=params, stream=True)
+        response = session.get(URL, params={'id': file_id, 'confirm': token}, stream=True)
 
     save_response_content(response, destination)
 
@@ -120,7 +119,7 @@ def get_confirm_token(response):
 
 def save_response_content(response, destination):
     CHUNK_SIZE = 32768
-
+    os.makedirs(os.path.dirname(destination), exist_ok=True)
     with open(destination, "wb") as f:
         for chunk in response.iter_content(CHUNK_SIZE):
             if chunk:
@@ -128,22 +127,18 @@ def save_response_content(response, destination):
 
 def download_and_extract_model(file_id, target_dir):
     zip_path = f"{target_dir}.zip"
-    print(f"Downloading model zip to {zip_path}...")
+    print(f"⬇️ Downloading model zip to {zip_path}...")
     download_file_from_google_drive(file_id, zip_path)
-
-    print(f"Extracting {zip_path} to {target_dir}...")
+    print(f"📦 Extracting {zip_path} to {target_dir}...")
     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
         zip_ref.extractall(target_dir)
-
     os.remove(zip_path)
 
-
-# === Your Google Drive file IDs for models ===
+# === Google Drive file IDs ===
 GDRIVE_MODEL_IDS = {
     "screws": "1SpBbwbOGQvejhrRmUWk3CMtPFMHN4XEn",
     "transistors": "1yAhd7jTHYdp4dbdAQHQSrcKZEsFFZ4Jt"
 }
-
 
 # === Label Maps ===
 LABEL_MAPS = {
@@ -170,6 +165,7 @@ MODEL_PATHS = {
     "transistors": "models/vit-transistors-model"
 }
 
+# === Category mapping ===
 CATEGORY_MAP = {
     "screw": "screws",
     "screws": "screws",
@@ -180,18 +176,15 @@ CATEGORY_MAP = {
 models = {}
 processors = {}
 
-# === Load Models and Processors ===
+# === Model loading ===
 def load_models():
-    for category_key, path in MODEL_PATHS.items():
-        # Download if model folder doesn't exist
-        if not os.path.exists(path):
-            print(f"Model path {path} not found, downloading from Google Drive...")
-            download_and_extract_model(GDRIVE_MODEL_IDS[category_key], path)
+    for category_key, model_dir in MODEL_PATHS.items():
+        if not os.path.exists(model_dir):
+            print(f"📁 Model directory {model_dir} not found. Downloading...")
+            download_and_extract_model(GDRIVE_MODEL_IDS[category_key], model_dir)
 
-        model = ViTForImageClassification.from_pretrained(path, local_files_only=True)
-        processor = ViTImageProcessor.from_pretrained(path, local_files_only=True)
-
-        # Update model config with labels
+        model = ViTForImageClassification.from_pretrained(model_dir, local_files_only=True)
+        processor = ViTImageProcessor.from_pretrained(model_dir, local_files_only=True)
         model.config.id2label = LABEL_MAPS[category_key]
         model.config.label2id = {v: k for k, v in LABEL_MAPS[category_key].items()}
         model.eval()
@@ -201,7 +194,7 @@ def load_models():
 
 load_models()
 
-
+# === Attention rollout for localization ===
 def compute_localization_boxes(model, inputs, threshold=0.6):
     with torch.no_grad():
         outputs = model.vit(
@@ -216,7 +209,7 @@ def compute_localization_boxes(model, inputs, threshold=0.6):
     for attn in attn_weights[1:]:
         rollout = attn[0] @ rollout
 
-    mask = rollout[0, 1:]  # Skip CLS token
+    mask = rollout[0, 1:]  # Exclude CLS token
     mask = mask.reshape(14, 14).cpu().numpy()
     mask = (mask - mask.min()) / (mask.max() - mask.min())
     mask = cv2.resize(mask, (224, 224))
@@ -227,7 +220,7 @@ def compute_localization_boxes(model, inputs, threshold=0.6):
     boxes = []
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
-        if w * h > 20:
+        if w * h > 20:  # Ignore tiny noise
             boxes.append({
                 "x": int(x),
                 "y": int(y),
@@ -236,7 +229,7 @@ def compute_localization_boxes(model, inputs, threshold=0.6):
             })
     return boxes
 
-
+# === Prediction Function ===
 def predict(category, image_bytes):
     normalized_category = CATEGORY_MAP.get(category.lower())
     if not normalized_category or normalized_category not in models:
@@ -247,7 +240,7 @@ def predict(category, image_bytes):
     labels = model.config.id2label
 
     image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
-    image_resized = image.resize((224, 224))  # Match model input size
+    image_resized = image.resize((224, 224))
     inputs = processor(images=image_resized, return_tensors="pt")
 
     with torch.no_grad():

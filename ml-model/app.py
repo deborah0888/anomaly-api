@@ -69,15 +69,18 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from inference import predict
+import os
 
 app = Flask(__name__)
-
-# Allow CORS for frontend on localhost:5173 (update if needed)
 CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
 @app.route("/", methods=["GET"])
 def home():
     return "🚀 Anomaly Detection API is up and running!", 200
+
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "ok"}), 200
 
 @app.route("/predict", methods=["POST"])
 def handle_prediction():
@@ -101,4 +104,5 @@ def handle_prediction():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", port=port)
