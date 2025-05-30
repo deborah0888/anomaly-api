@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from '../src/components/Navbar';
-import Hero from '../src/components/hero';
+import Hero from '../src/components/Hero';
 import Register from '../src/pages/Register';
 import Login from '../src/pages/Login';
 import Dashboard from '../src/pages/Dashboard';
