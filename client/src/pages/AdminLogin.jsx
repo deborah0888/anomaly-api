@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AdminContext } from "../../context/adminContext";
-import "../styles/login.css"; // Import the login.css file
+import "../styles/Login.css"; // Import the login.css file
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function AdminLogin() {
