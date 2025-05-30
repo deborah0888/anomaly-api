@@ -95,48 +95,18 @@ import io
 import os
 import cv2
 import numpy as np
-import requests
+import gdown
 import zipfile
 
 # === Google Drive download helpers ===
 
 def download_file_from_google_drive(file_id, destination):
-    def get_confirm_token(response):
-        for key, value in response.cookies.items():
-            if key.startswith('download_warning'):
-                return value
-        return None
-
-    URL = "https://docs.google.com/uc?export=download"
-    session = requests.Session()
-
-    response = session.get(URL, params={'id': file_id}, stream=True)
-    token = get_confirm_token(response)
-
-    if token:
-        params = {'id': file_id, 'confirm': token}
-        response = session.get(URL, params=params, stream=True)
-
-    # Check for HTML response (indicating a failure)
-    content_type = response.headers.get("Content-Type", "")
-    if "text/html" in content_type:
-        raise Exception("Download failed: Received HTML instead of a zip file. Possibly due to Google Drive quota or incorrect file ID.")
-
-    save_response_content(response, destination)
-
-def get_confirm_token(response):
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            return value
-    return None
-
-def save_response_content(response, destination):
-    CHUNK_SIZE = 32768
+    url = f"https://drive.google.com/uc?id={file_id}"
     os.makedirs(os.path.dirname(destination), exist_ok=True)
-    with open(destination, "wb") as f:
-        for chunk in response.iter_content(CHUNK_SIZE):
-            if chunk:
-                f.write(chunk)
+    try:
+        gdown.download(url, destination, quiet=False)
+    except Exception as e:
+        raise Exception(f"Download failed using gdown: {e}")
 
 def download_and_extract_model(file_id, target_dir):
     zip_path = f"{target_dir}.zip"
