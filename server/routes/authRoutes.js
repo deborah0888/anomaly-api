@@ -255,7 +255,10 @@ const {
 
 // Multer config — use memoryStorage to forward file directly to Flask
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
+const upload = require("../utils/multer"); // path to your multer config file
+
+// router.post("/upload", upload.single("image"), uploadImage);
 
 // Routes
 router.get("/", test);

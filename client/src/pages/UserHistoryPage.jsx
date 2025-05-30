@@ -32,17 +32,32 @@ export default function UserHistoryPage() {
         {images.length === 0 ? (
           <p>No image history found.</p>
         ) : (
+          // images.map((img, idx) => (
+          //   <div key={idx} className="history-card">
+          //     <img
+          //       src={`http://localhost:8000${img.imageUrl}`}
+          //       alt={`Upload ${idx}`}
+          //     />
+          //     <p><strong>Score:</strong> {img.anomalyScore}</p>
+          //     <p><strong>Anomalous:</strong> {img.isAnomalous ? "Yes" : "No"}</p>
+          //     <p><strong>Uploaded:</strong> {new Date(img.uploadedAt).toLocaleString()}</p>
+          //   </div>
+          // )
           images.map((img, idx) => (
-            <div key={idx} className="history-card">
-              <img
-                src={`http://localhost:8000${img.imageUrl}`}
-                alt={`Upload ${idx}`}
-              />
-              <p><strong>Score:</strong> {img.anomalyScore}</p>
-              <p><strong>Anomalous:</strong> {img.isAnomalous ? "Yes" : "No"}</p>
-              <p><strong>Uploaded:</strong> {new Date(img.uploadedAt).toLocaleString()}</p>
-            </div>
-          ))
+  <div key={idx} className="history-card">
+    <img
+      src={`http://localhost:8000${img.imageUrl}`}
+      alt={`Upload ${idx}`}
+    />
+    <p><strong>Confidence Score:</strong> {img.confidenceScore}</p>
+    <p><strong>Category:</strong> {img.category}</p>
+    <p><strong>Class:</strong> {img.predictedClass}</p>
+    {/* <p><strong>Anomalous:</strong> {img.isAnomalous }</p> */}
+    <p><strong>Uploaded:</strong> {new Date(img.uploadedAt).toLocaleString()}</p>
+  </div>
+))
+
+          
         )}
       </div>
     </div>

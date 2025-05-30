@@ -984,18 +984,16 @@ const loginUser = async (req, res) => {
       expiresIn: "7d",
     });
 
-    res
-      .cookie("token", token, { httpOnly: true, sameSite: "strict" })
-      .json({
-        success: true,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          imageUrl: user.imageUrl,
-        },
-        token,
-      });
+    res.cookie("token", token, { httpOnly: true, sameSite: "strict" }).json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        imageUrl: user.imageUrl,
+      },
+      token,
+    });
   } catch (error) {
     console.error("❌ Login Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -1407,6 +1405,21 @@ const uploadImage = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ error: "User ID not provided" });
     }
+    // console.log("📦 req.file:", req.file);
+    const {
+      fieldname,
+      originalname,
+      mimetype,
+      size,
+      path: filePath,
+    } = req.file;
+    console.log("📦 req.file:", {
+      fieldname,
+      originalname,
+      mimetype,
+      size,
+      filePath,
+    });
 
     // Ensure uploads folder exists
     const uploadsDir = path.join(__dirname, "../uploads");
@@ -1416,9 +1429,13 @@ const uploadImage = async (req, res) => {
 
     // Save file buffer to uploads folder with unique filename
     // Using timestamp to avoid overwrites
-    const uniqueFilename = `${Date.now()}_${req.file.originalname}`;
-    const savedFilePath = path.join(uploadsDir, uniqueFilename);
-    fs.writeFileSync(savedFilePath, req.file.buffer);
+    // const uniqueFilename = `${Date.now()}_${req.file.originalname}`;
+    // const savedFilePath = path.join(uploadsDir, uniqueFilename);
+    // fs.writeFileSync(savedFilePath, req.file.buffer);
+    const savedFilePath = req.file.path;
+    const uniqueFilename = req.file.filename;
+    console.log("✅ File saved at:", savedFilePath);
+    // const result = await model.predict(savedFilePath); // or whatever you're doing
 
     // Prepare form data to send to Flask API
     const formData = new FormData();
@@ -1426,17 +1443,29 @@ const uploadImage = async (req, res) => {
     formData.append("category", category);
 
     // Send image and category to Flask server
-    const flaskRes = await axios.post("http://localhost:5001/predict", formData, {
-      headers: formData.getHeaders(),
-    });
+    const flaskRes = await axios.post(
+      "http://localhost:5001/predict",
+      formData,
+      {
+        headers: formData.getHeaders(),
+      }
+    );
 
-    const { is_anomalous, error,  confidence, predicted_class } = flaskRes.data;
+    const { is_anomalous, error, confidence, predicted_class } = flaskRes.data;
 
     // Create new image entry for user document in Mongo
+    // const newImageEntry = {
+    //   imageUrl: `/uploads/${uniqueFilename}`, // this is relative URL for frontend
+    //   anomalyScore: error,
+    //   isAnomalous: is_anomalous,
+    //   uploadedAt: new Date(),
+    // };
     const newImageEntry = {
-      imageUrl: `/uploads/${uniqueFilename}`, // this is relative URL for frontend
-      anomalyScore: error,
+      imageUrl: `/uploads/${uniqueFilename}`,
       isAnomalous: is_anomalous,
+      category, // ✅ save category from req.body
+      predictedClass: predicted_class, // ✅ from Flask response
+      confidenceScore: confidence, // ✅ from Flask response
       uploadedAt: new Date(),
     };
 
@@ -1452,7 +1481,7 @@ const uploadImage = async (req, res) => {
       is_anomalous,
       error,
       confidence,
-  predicted_class,
+      predicted_class,
       imageUrl: newImageEntry.imageUrl,
       mongo_save: true,
       user,

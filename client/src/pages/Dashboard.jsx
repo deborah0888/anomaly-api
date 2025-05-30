@@ -893,15 +893,21 @@ const Dashboard = () => {
         withCredentials: true,
       });
 
-      setAnomalyResult({
-        isAnomalous: data.is_anomalous,
-        anomalyScore: data.error,
-      });
+
 
       setDefectClass(data.defect_class || null);
       setPredictedClass(data.predicted_class || null);
       setConfidence(data.confidence || null);
       setLocalizations(data.localization || []);
+const isAnomalous = (data.defect_class && data.defect_class.toLowerCase() !== 'good') 
+                 || (data.predicted_class && data.predicted_class.toLowerCase() !== 'good');
+
+setAnomalyResult({
+  isAnomalous: isAnomalous,
+  anomalyScore: data.error,
+  defectClass: data.defect_class || null,
+  predictedClass: data.predicted_class || null
+});
 
       if (data.imageUrl) {
         if (previewUrl && previewUrl.startsWith('blob:')) {
@@ -1019,15 +1025,16 @@ const Dashboard = () => {
                 </>
               )}
             </div>
-            <div className="result-score">
+            {/* <div className="result-score">
               Confidence: <span>{anomalyResult.anomalyScore}</span>
-            </div>
+            </div> */}
+                    {defectClass && <div><strong>Defect Class:</strong> {defectClass}</div>}
+        {predictedClass && <div><strong>Predicted Class:</strong> {predictedClass}</div>}
+        {confidence && <div><strong>Confidence:</strong> {confidence}</div>}
           </div>
         )}
 
-        {defectClass && <div><strong>Defect Class:</strong> {defectClass}</div>}
-        {predictedClass && <div><strong>Predicted Class:</strong> {predictedClass}</div>}
-        {confidence && <div><strong>Confidence:</strong> {confidence}</div>}
+
         {localizations.length > 0 && (
           <div>
             <strong>Localization Boxes:</strong>

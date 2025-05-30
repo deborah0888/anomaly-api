@@ -116,29 +116,44 @@
 // const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 // module.exports = upload;
+// const multer = require("multer");
+// const path = require("path");
+
+// // Storage destination and unique filename
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "uploads/"); // Store in uploads folder
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueName = Date.now() + "-" + file.originalname;
+//     cb(null, uniqueName);
+//   },
+// });
+
+// // Allow only image files
+// const fileFilter = (req, file, cb) => {
+//   if (file.mimetype.startsWith("image/")) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("Only image files are allowed!"), false);
+//   }
+// };
+
+// const upload = multer({ storage, fileFilter });
+
+// module.exports = upload;
 const multer = require("multer");
 const path = require("path");
 
-// Storage destination and unique filename
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Store in uploads folder
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    const uniqueName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueName);
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-// Allow only image files
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) {
-    cb(null, true);
-  } else {
-    cb(new Error("Only image files are allowed!"), false);
-  }
-};
-
-const upload = multer({ storage, fileFilter });
+const upload = multer({ storage });
 
 module.exports = upload;

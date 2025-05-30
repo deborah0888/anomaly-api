@@ -14,12 +14,21 @@ const UserHistory = () => {
     <div className="user-history-container">
       <h1 className="user-history-title">Your History</h1>
       <div className="user-history-grid">
-        {user.images.map((img, index) => (
+        {/* {user.images.map((img, index) => (
           <div key={index} className="user-history-card">
             <img src={`http://localhost:8000${img.imageUrl}`} alt={`Uploaded ${index}`} />
             <p><strong>Anomaly Score:</strong> {img.anomalyScore}</p>
           </div>
-        ))}
+        ))} */}
+        {user.images.map((img, index) => (
+  <div key={index} className="user-history-card">
+    <img src={`http://localhost:8000${img.imageUrl}`} alt={`Uploaded ${index}`} />
+    <p><strong>Category:</strong> {img.category}</p>
+    <p><strong>Predicted Class:</strong> {img.predictedClass}</p>
+    <p><strong>Confidence Score:</strong> {img.confidenceScore}</p>
+  </div>
+))}
+
       </div>
     </div>
   );
