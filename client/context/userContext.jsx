@@ -50,7 +50,7 @@ export function UserContextProvider({ children }) {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const { data } = await axios.get("http://anomaly-detection-production-7004.up.railway.app/api/auth/profile", {
+      const { data } = await axios.get("https://anomaly-detection-production-7004.up.railway.app/api/auth/profile", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -70,7 +70,7 @@ export function UserContextProvider({ children }) {
 
   const logout = async () => {
     const token = localStorage.getItem("token");
-    await axios.post("http://localhost:8000/api/auth/logout", {}, {
+    await axios.post("http://anomaly-detection-production-7004.up.railway.app/api/auth/logout", {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
