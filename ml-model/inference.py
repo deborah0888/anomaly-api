@@ -101,13 +101,26 @@ import zipfile
 # === Google Drive download helpers ===
 
 def download_file_from_google_drive(file_id, destination):
+    def get_confirm_token(response):
+        for key, value in response.cookies.items():
+            if key.startswith('download_warning'):
+                return value
+        return None
+
     URL = "https://docs.google.com/uc?export=download"
     session = requests.Session()
+
     response = session.get(URL, params={'id': file_id}, stream=True)
     token = get_confirm_token(response)
 
     if token:
-        response = session.get(URL, params={'id': file_id, 'confirm': token}, stream=True)
+        params = {'id': file_id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+
+    # Check for HTML response (indicating a failure)
+    content_type = response.headers.get("Content-Type", "")
+    if "text/html" in content_type:
+        raise Exception("Download failed: Received HTML instead of a zip file. Possibly due to Google Drive quota or incorrect file ID.")
 
     save_response_content(response, destination)
 
